@@ -1,4 +1,5 @@
-﻿using Telegram.Bot;
+﻿using System.Text.Json;
+using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
@@ -32,45 +33,27 @@ namespace TelegramConsole
             cts.Cancel();
 
 
-            async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
+            async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
+                CancellationToken cancellationToken)
             {
                 // Only process Message updates: https://core.telegram.org/bots/api#message
                 if (update.Message is not { } message)
                     return;
-                
-
-
-                var chatId = message.Chat.Id;
-
-                
-                if(update.Message.Document is not null)
+                if (message.Document is not null)
                 {
-                    
-                    var file = await botClient.GetFileAsync(message.Document.FileId);
-                    FileStream fs = new FileStream("D:\\Repos\\PrinterApp\\DowloadedFiles\\"+message.Document.FileName, FileMode.Create);
-                    await botClient.DownloadFileAsync(file.FilePath, fs);
-                    fs.Close();
-                    fs.Dispose();
+                    var filePath = await DownloadFile(message, botClient);
+                    //new PrintingExample(filePath);
                 }
-                
 
-                //new PrintingExample(filePath);
-
-
-
-                // Echo received message text
-                if(message.Text is not null)
+                // Echo if received message text
+                if (message.Text is not null)
                 {
-                    Console.WriteLine($"Received a '{message.Text}' message in chat {chatId}.");
-                    Message sentMessage = await botClient.SendTextMessageAsync(
-                                        chatId: chatId,
-                                        text: "Ok Bro " + message.Text,
-                                        cancellationToken: cancellationToken);
+                    await SendMessage(message, botClient, cancellationToken);
                 }
-                
             }
 
-            Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
+            Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception,
+                CancellationToken cancellationToken)
             {
                 var ErrorMessage = exception switch
                 {
@@ -82,6 +65,31 @@ namespace TelegramConsole
                 Console.WriteLine(ErrorMessage);
                 return Task.CompletedTask;
             }
+        }
+
+        private static async Task SendMessage(Message message, ITelegramBotClient botClient,
+            CancellationToken cancellationToken)
+        {
+            Console.WriteLine(
+                $"Received a '{message.Text}' message in chat {message.Chat.Id} from {message.Chat.Username}.");
+            Message sentMessage = await botClient.SendTextMessageAsync(
+                chatId: message.Chat.Id,
+                text: $"Thank you '{message.Chat.FirstName}' for messaging.",
+                cancellationToken: cancellationToken);
+        }
+
+        private static async Task<string> DownloadFile(Message message, ITelegramBotClient botClient)
+        {
+            Console.WriteLine(JsonSerializer.Serialize(message.Document));
+            var file = await botClient.GetFileAsync(message.Document.FileId);
+            var filepath = "./DowloadedFiles/" + message.From?.Username + "_" + message.Document.FileName;
+            Directory.CreateDirectory(Path.GetDirectoryName(filepath));
+            var fs = new FileStream(filepath, FileMode.Create);
+            if (file.FilePath != null) await botClient.DownloadFileAsync(file.FilePath, fs);
+            Console.WriteLine($"file downloaded {message.Document.FileName}");
+            fs.Close();
+            await fs.DisposeAsync();
+            return filepath;
         }
     }
 }
