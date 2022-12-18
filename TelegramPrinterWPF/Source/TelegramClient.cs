@@ -1,10 +1,21 @@
-﻿using Microsoft.Extensions.Logging;
-using System;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -18,8 +29,14 @@ namespace TelegramPrinterWPF.Source
     {
         public readonly TelegramBotClient BotClient;
         private DocumentPrinter _documentPrinter;
+        private MainWindow MainWindow;
         public TelegramClient()
         {
+            BotClient = new TelegramBotClient("5744763753:AAFV98ovmx_LGfFPeFGYXH3zjBOqw-NLTPU");
+        }
+        public TelegramClient(MainWindow mainWindow)
+        {
+            MainWindow = mainWindow;
             BotClient = new TelegramBotClient("5744763753:AAFV98ovmx_LGfFPeFGYXH3zjBOqw-NLTPU");
         }
         public async Task TelegramBotClientAsync(CancellationToken stoppingToken)
@@ -40,12 +57,10 @@ namespace TelegramPrinterWPF.Source
 
             var me = await BotClient.GetMeAsync();
             Debug.WriteLine($"Start listening for @{me.Username}");
-            // Send cancellation request to stop bot
-        }
-        public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,
-    CancellationToken cancellationToken)
-        {
 
+        }
+        public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,CancellationToken cancellationToken)
+        {
             // Only process Message updates: https://core.telegram.org/bots/api#message
             if (update.Message is not { } message)
                 return;
@@ -62,8 +77,7 @@ namespace TelegramPrinterWPF.Source
             }
         }
 
-        public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception,
-            CancellationToken cancellationToken)
+        public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception,CancellationToken cancellationToken)
         {
             var ErrorMessage = exception switch
             {
@@ -73,6 +87,11 @@ namespace TelegramPrinterWPF.Source
             };
 
             Debug.WriteLine(ErrorMessage);
+            MainWindow.Dispatcher.Invoke(() =>
+            {
+                MainWindow.Telegram_Logs.Items.Add(ErrorMessage);
+                MainWindow.Close();
+            });
             return Task.CompletedTask;
         }
         private async Task SendMessage(Message message, ITelegramBotClient botClient,
@@ -80,6 +99,10 @@ namespace TelegramPrinterWPF.Source
         {
             Debug.WriteLine(
                 $"Received a '{message.Text}' message in chat {message.Chat.Id} from {message.Chat.Username}.");
+            MainWindow.Dispatcher.Invoke(() =>
+            {
+                MainWindow.Telegram_Logs.Items.Add($"Received a '{message.Text}' message from {message.Chat.Username}.");
+            });
             Message sentMessage = await botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
                 text: $"Thank you '{message.Chat.FirstName}' for messaging your message is {message.Text}.",
@@ -91,10 +114,14 @@ namespace TelegramPrinterWPF.Source
             Debug.WriteLine(JsonSerializer.Serialize(message.Document));
             var file = await botClient.GetFileAsync(message.Document.FileId);
             var filepath = "./DowloadedFiles/" + message.From?.Username + "_" + message.Document.FileName;
-            Directory.CreateDirectory(Path.GetDirectoryName(filepath));
+
+            Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filepath));
             var fs = new FileStream(filepath, FileMode.Create);
             if (file.FilePath != null) await botClient.DownloadFileAsync(file.FilePath, fs);
             Debug.WriteLine($"file downloaded {message.Document.FileName} path {filepath}");
+            MainWindow.Dispatcher?.Invoke(() =>
+            MainWindow.Telegram_Logs.Items.Add($"file downloaded {message.Document.FileName} path {filepath}")
+            );
             fs.Close();
             await fs.DisposeAsync();
             return filepath;

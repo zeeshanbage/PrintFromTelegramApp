@@ -6,6 +6,6 @@
         xmlns:local="clr-namespace:TelegramPrinterWPF"
         mc:Ignorable="d"
         Title="PrintFromTelegram" Height="450" Width="800">
-    <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Margin="91,79,0,0"/>
+    <ListBox x:Name="Telegram_Logs" x:FieldModifier="public" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="91,79,0,0"/>
 
 </Window>
