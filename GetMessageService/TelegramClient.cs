@@ -12,6 +12,7 @@ namespace GetMessageService
     {
         private readonly ILogger<Worker> _logger;
         private readonly TelegramBotClient BotClient;
+        private DocumentPrinter _documentPrinter;
         public TelegramClient(ILogger<Worker> logger)
         {
             _logger = logger;
@@ -48,7 +49,8 @@ namespace GetMessageService
                 if (message.Document is not null)
                 {
                     var filePath = await DownloadFile(message, botClient);
-                    //new PrintingExample(filePath);
+                    _documentPrinter = new DocumentPrinter();
+                    _documentPrinter.print(filePath);
                 }
                 // Echo if received message text
                 if (message.Text is not null)
