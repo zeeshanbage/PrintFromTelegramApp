@@ -6,14 +6,19 @@ using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Message = Telegram.Bot.Types.Message;
 
-namespace TelegramConsole
+namespace GetMessageService
 {
     internal class TelegramClient
     {
-        
-        public static async Task TelegramBotClientAsync()
+        private readonly ILogger<Worker> _logger;
+        private readonly TelegramBotClient BotClient;
+        public TelegramClient(ILogger<Worker> logger)
         {
-            var botClient = new TelegramBotClient("5744763753:AAFV98ovmx_LGfFPeFGYXH3zjBOqw-NLTPU");
+            _logger = logger;
+            BotClient = new TelegramBotClient("5744763753:AAFV98ovmx_LGfFPeFGYXH3zjBOqw-NLTPU");
+        }
+        public async Task TelegramBotClientAsync(CancellationToken stoppingToken)
+        {
             CancellationTokenSource cts = new();
 
             ReceiverOptions receiverOptions = new()
@@ -21,14 +26,14 @@ namespace TelegramConsole
                 AllowedUpdates = Array.Empty<UpdateType>() // receive all update types
             };
 
-            botClient.StartReceiving(
+            BotClient.StartReceiving(
                 updateHandler: HandleUpdateAsync,
                 pollingErrorHandler: HandlePollingErrorAsync,
                 receiverOptions: receiverOptions,
-                cancellationToken: cts.Token
+                cancellationToken: stoppingToken
             );
-            var me = await botClient.GetMeAsync();
-            Console.WriteLine($"Start listening for @{me.Username}");
+            var me = await BotClient.GetMeAsync();
+            _logger.LogInformation($"Start listening for @{me.Username}");
             Console.ReadLine();
             // Send cancellation request to stop bot
             cts.Cancel();
@@ -62,31 +67,31 @@ namespace TelegramConsole
                     _ => exception.ToString()
                 };
 
-                Console.WriteLine(ErrorMessage);
+                _logger.LogInformation(ErrorMessage);
                 return Task.CompletedTask;
             }
         }
 
-        private static async Task SendMessage(Message message, ITelegramBotClient botClient,
+        private async Task SendMessage(Message message, ITelegramBotClient botClient,
             CancellationToken cancellationToken)
         {
-            Console.WriteLine(
+            _logger.LogInformation(
                 $"Received a '{message.Text}' message in chat {message.Chat.Id} from {message.Chat.Username}.");
             Message sentMessage = await botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
-                text: $"Thank you '{message.Chat.FirstName}' for messaging.",
+                text: $"Thank you '{message.Chat.FirstName}' for messaging your message is {message.Text}.",
                 cancellationToken: cancellationToken);
         }
 
-        private static async Task<string> DownloadFile(Message message, ITelegramBotClient botClient)
+        private async Task<string> DownloadFile(Message message, ITelegramBotClient botClient)
         {
-            Console.WriteLine(JsonSerializer.Serialize(message.Document));
+            _logger.LogInformation(JsonSerializer.Serialize(message.Document));
             var file = await botClient.GetFileAsync(message.Document.FileId);
             var filepath = "./DowloadedFiles/" + message.From?.Username + "_" + message.Document.FileName;
             Directory.CreateDirectory(Path.GetDirectoryName(filepath));
             var fs = new FileStream(filepath, FileMode.Create);
             if (file.FilePath != null) await botClient.DownloadFileAsync(file.FilePath, fs);
-            Console.WriteLine($"file downloaded {message.Document.FileName}");
+            _logger.LogInformation($"file downloaded {message.Document.FileName} path {filepath}");
             fs.Close();
             await fs.DisposeAsync();
             return filepath;
