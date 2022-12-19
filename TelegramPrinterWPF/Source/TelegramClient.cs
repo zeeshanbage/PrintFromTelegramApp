@@ -73,7 +73,20 @@ namespace TelegramPrinterWPF.Source
             {
                 var filePath = await DownloadFile(message, botClient);
                 _documentPrinter = new DocumentPrinter();
-                _documentPrinter.printWithSpire(filePath);
+                bool printed = false;
+                MessageBoxResult result = MessageBox.Show("Yes: For duplex print.\n No: for 1 side", "Printing the PDF", MessageBoxButton.YesNoCancel);
+                if (result == MessageBoxResult.Yes)
+                {
+                    printed = _documentPrinter.printWithDynamicPdf(filePath, 2);
+                }
+                else if (result == MessageBoxResult.No)
+                {
+                    printed = _documentPrinter.printWithDynamicPdf(filePath);
+                }
+                else
+                {
+                    return;
+                }
             }
             // Echo if received message text
             if (message.Text is not null)
