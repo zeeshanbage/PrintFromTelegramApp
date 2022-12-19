@@ -59,7 +59,12 @@ namespace TelegramPrinterWPF.Source
             Debug.WriteLine($"Start listening for @{me.Username}");
 
         }
-        public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update,CancellationToken cancellationToken)
+
+        public static void StopTelegramBot(CancellationTokenSource cts)
+        {
+            cts.Cancel();
+        }
+        public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
             // Only process Message updates: https://core.telegram.org/bots/api#message
             if (update.Message is not { } message)
@@ -77,7 +82,7 @@ namespace TelegramPrinterWPF.Source
             }
         }
 
-        public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception,CancellationToken cancellationToken)
+        public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
         {
             var ErrorMessage = exception switch
             {
@@ -125,6 +130,29 @@ namespace TelegramPrinterWPF.Source
             fs.Close();
             await fs.DisposeAsync();
             return filepath;
+        }
+
+        public async Task startBotAsync(CancellationTokenSource cts)
+        {
+            Debug.WriteLine($"Start listening for ");
+            MainWindow.Telegram_Logs.Items.Add($"Telegram Bot is Online");
+
+            ReceiverOptions receiverOptions = new()
+            {
+                AllowedUpdates = Array.Empty<UpdateType>() // receive all update types
+            };
+            var me = await BotClient.GetMeAsync();
+            Debug.WriteLine($"Bot is online. Start listening for @{me.Username}");
+            MainWindow.Telegram_Logs.Items.Add($"Telegram Bot is online. Started listening for @{me.Username}");
+            BotClient.StartReceiving(
+                updateHandler:HandleUpdateAsync,
+                pollingErrorHandler:HandlePollingErrorAsync,
+                receiverOptions: receiverOptions,
+                cancellationToken: cts.Token
+                );
+
+
+
         }
     }
 }

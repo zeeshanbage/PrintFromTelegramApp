@@ -5,7 +5,33 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TelegramPrinterWPF"
         mc:Ignorable="d"
-        Title="PrintFromTelegram" Height="450" Width="800">
-    <ListBox x:Name="Telegram_Logs" x:FieldModifier="public" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="91,79,0,0"/>
+        Title="PrintFromTelegram" Height="442" Width="689" WindowStartupLocation="CenterScreen">
+
+    <Grid Margin="10,0,0,0">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="63*"/>
+            <ColumnDefinition Width="649*"/>
+            <ColumnDefinition Width="22*"/>
+            <ColumnDefinition Width="57*"/>
+            <ColumnDefinition Width="9*"/>
+        </Grid.ColumnDefinitions>
+        <ListBox x:Name="Telegram_Logs" x:FieldModifier="public" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,79,4,31" Grid.ColumnSpan="5">
+            <ListBox.Effect>
+                <DropShadowEffect/>
+            </ListBox.Effect>
+        </ListBox>
+        <Button x:Name="TestPrintButton" Content="TestPrint" HorizontalAlignment="Left" Margin="531,42,0,0" VerticalAlignment="Top" Click="TestPrintButton_Click" Height="33" Width="77" Grid.Column="1" RenderTransformOrigin="-0.953,-0.123" Grid.ColumnSpan="3"/>
+        <ToggleButton  x:Name="ToggleBot" Content="Stop Bot" HorizontalAlignment="Left" Margin="10,38,0,0" VerticalAlignment="Top" 
+                Checked = "HandleCheck" Unchecked = "HandleUnchecked"
+                Height="32" Width="76" Foreground="White" Grid.ColumnSpan="2">
+            <ToggleButton.Background>
+                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
+                    <GradientStop Color="Black"/>
+                    <GradientStop Color="#FFAEF299" Offset="1"/>
+                </LinearGradientBrush>
+            </ToggleButton.Background>
+        </ToggleButton>
+
+    </Grid>
 
 </Window>
