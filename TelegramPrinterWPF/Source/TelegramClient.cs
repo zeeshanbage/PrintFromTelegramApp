@@ -68,7 +68,7 @@ namespace TelegramPrinterWPF.Source
             {
                 var filePath = await DownloadFile(message, botClient);
                 _documentPrinter = new DocumentPrinter();
-                _documentPrinter.print(filePath);
+                _documentPrinter.printWithSpire(filePath);
             }
             // Echo if received message text
             if (message.Text is not null)

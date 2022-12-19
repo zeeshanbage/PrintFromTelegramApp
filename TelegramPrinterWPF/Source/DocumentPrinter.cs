@@ -1,42 +1,32 @@
 using System;
-using System.Drawing;
+using Microsoft.Win32;
+using System.Diagnostics;
+using Spire.Pdf;
 using System.Drawing.Printing;
-using System.IO;
+
 namespace TelegramPrinterWPF.Source;
-public class DocumentPrinter : IDisposable
+public class DocumentPrinter
 {
-    private StreamReader streamToPrint;
+
 
     public DocumentPrinter()
     {
 
     }
-    public void print(string docPath)
+    public void printWithSpire(string docPath)
     {
-        try
-        {
-            streamToPrint = new StreamReader(docPath);
-            try
-            {
-                foreach (string pName in PrinterSettings.InstalledPrinters) {
+        //Load a PDF document
+        PdfDocument doc = new PdfDocument(docPath);
 
-                }
-                PrintDocument pd = new PrintDocument();
-                pd.Print();
-            }
-            finally
-            {
-                streamToPrint.Close();
-            }
-        }
-        catch (Exception ex)
-        {
+        //Specify printer name
+        //doc.PrintSettings.PrinterName = "OneNote for Windows 10";
 
-        }
+        //Prevent the printer dialog from displaying
+        doc.PrintSettings.PrintController = new StandardPrintController();
+        doc.PrintSettings.Color = false;
+
+        //Print the document
+        doc.Print();
     }
 
-    public void Dispose()
-    {
-        throw new NotImplementedException();
-    }
 }
