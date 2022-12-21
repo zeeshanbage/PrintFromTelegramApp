@@ -20,7 +20,7 @@ public class DocumentPrinter
     {
         _MainWindow = mainWindow;
     }
-    public bool printWithSpire(string filePath,int duplexMode=2, short NoOfCopies=1)
+    public bool printWithSpire(string filePath,bool? duplexMode=false, short NoOfCopies=1)
     {
         try
         {
@@ -29,7 +29,7 @@ public class DocumentPrinter
             //pdfdocument.PrintSettings.PrinterName = "OneNote for Windows 10";
             pdfdocument.PrintSettings.Copies = NoOfCopies;
 
-            if (duplexMode== 2 && pdfdocument.PrintSettings.CanDuplex)
+            if (duplexMode==true && pdfdocument.PrintSettings.CanDuplex)
             {
                 pdfdocument.PrintSettings.Duplex = Duplex.Vertical;
             }

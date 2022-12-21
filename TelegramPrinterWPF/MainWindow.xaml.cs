@@ -11,13 +11,14 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TelegramPrinterWPF.Source;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace TelegramPrinterWPF
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow 
     {
         CancellationTokenSource cts;
         public MainWindow()
@@ -52,21 +53,36 @@ namespace TelegramPrinterWPF
         {
             var TestPrinter = new DocumentPrinter(this);
             bool printed=false;
+            PrintWindow printWindow = new PrintWindow();
+
+            var x= printWindow.ShowDialog();
+            if(x==true)
+            {
+                printed = TestPrinter.printWithSpire("./DowloadedFiles/Zeeshanbage_certificate.pdf", printWindow.isDuplexPrint.IsChecked, short.Parse(printWindow.NoOfCopies.Text));
+            }
+            Debug.WriteLine("passed to the window");
+
+        }
+        private void TestPrintButton_Click2(object sender, RoutedEventArgs e)
+        {
+            var TestPrinter = new DocumentPrinter(this);
+            bool printed = false;
+
             MessageBoxResult result = MessageBox.Show("Yes- For duplex print. No- for 1 side", "Printing the PDF", MessageBoxButton.YesNoCancel);
             if (result == MessageBoxResult.Yes)
             {
-                printed = TestPrinter.printWithSpire("C:\\Users\\Zeeshan\\source\\repos\\zeeshanbage\\PrinterApp\\TelegramPrinterWPF\\bin\\Debug\\net7.0-windows\\DowloadedFiles\\Zeeshanbage_decbill.pdf", 2,2);
+                printed = TestPrinter.printWithSpire("C:\\Users\\Zeeshan\\source\\repos\\zeeshanbage\\PrinterApp\\TelegramPrinterWPF\\bin\\Debug\\net7.0-windows\\DowloadedFiles\\Zeeshanbage_decbill.pdf");
             }
-            else if(result == MessageBoxResult.No)
+            else if (result == MessageBoxResult.No)
             {
                 printed = TestPrinter.printWithSpire("./DowloadedFiles/Zeeshanbage_certificate.pdf");
             }
             else
             {
-                return; 
+                return;
             }
 
-            
+
             if (printed)
             {
                 TestPrintButton.Background = Brushes.Green;
