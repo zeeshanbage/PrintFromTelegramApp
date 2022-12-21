@@ -4,18 +4,9 @@ using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -72,16 +63,17 @@ namespace TelegramPrinterWPF.Source
             if (message.Document is not null)
             {
                 var filePath = await DownloadFile(message, botClient);
-                _documentPrinter = new DocumentPrinter();
+
+                _documentPrinter = new DocumentPrinter(MainWindow);
                 bool printed = false;
                 MessageBoxResult result = MessageBox.Show("Yes: For duplex print.\n No: for 1 side", "Printing the PDF", MessageBoxButton.YesNoCancel);
                 if (result == MessageBoxResult.Yes)
                 {
-                    printed = _documentPrinter.printWithDynamicPdf(filePath, 2);
+                    printed = _documentPrinter.printWithSpire(filePath, 2);
                 }
                 else if (result == MessageBoxResult.No)
                 {
-                    printed = _documentPrinter.printWithDynamicPdf(filePath);
+                    printed = _documentPrinter.printWithSpire(filePath,1,2);
                 }
                 else
                 {
@@ -132,7 +124,7 @@ namespace TelegramPrinterWPF.Source
             Debug.WriteLine(JsonSerializer.Serialize(message.Document));
             var file = await botClient.GetFileAsync(message.Document.FileId);
             var filepath = "./DowloadedFiles/" + message.From?.Username + "_" + message.Document.FileName;
-
+            //var absfilepath = Directory.GetCurrentDirectory()+filepath.TrimStart('.');
             Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filepath));
             var fs = new FileStream(filepath, FileMode.Create);
             if (file.FilePath != null) await botClient.DownloadFileAsync(file.FilePath, fs);

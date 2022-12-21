@@ -1,39 +1,46 @@
 using System;
 using System.Diagnostics;
+using System.Drawing.Printing;
+using System.Linq;
 using System.Windows.Forms;
-using System;
-using ceTe.DynamicPDF.Printing;
+using System.Windows.Forms.Design;
 using Spire.Pdf;
-using IronPdf;
+using Telegram.Bot.Types;
 
 namespace TelegramPrinterWPF.Source;
 public class DocumentPrinter
 {
-
+    MainWindow _MainWindow;
 
     public DocumentPrinter()
     {
 
     }
-    public bool printWithSpire(string docPath)
+    public DocumentPrinter(MainWindow mainWindow)
+    {
+        _MainWindow = mainWindow;
+    }
+    public bool printWithSpire(string filePath,int duplexMode=2, short NoOfCopies=1)
     {
         try
         {
-            //Load a PDF document
-            using Spire.Pdf.PdfDocument doc = new Spire.Pdf.PdfDocument(docPath);
+            PdfDocument pdfdocument = new PdfDocument();
+            pdfdocument.LoadFromFile(filePath);
+            //pdfdocument.PrintSettings.PrinterName = "OneNote for Windows 10";
+            pdfdocument.PrintSettings.Copies = NoOfCopies;
 
-            //Specify printer name
-            doc.PrintSettings.PrinterName = "Brother DCP-L2540DW series";
-            doc.PrintSettings.SelectSinglePageLayout(Spire.Pdf.Print.PdfSinglePageScalingMode.ActualSize);
-
-            //Prevent the printer dialog from displaying
-            //doc.PrintSettings.PrintController = new StandardPrintController();
-            //doc.PrintSettings.Color = false;
-
-            //Print the document
-            doc.Print();
-            doc.Dispose();
+            if (duplexMode== 2 && pdfdocument.PrintSettings.CanDuplex)
+            {
+                pdfdocument.PrintSettings.Duplex = Duplex.Vertical;
+            }
+            var fileName=filePath.Split(@"/").LastOrDefault();
+            _MainWindow.Telegram_Logs.Items.Dispatcher.Invoke(() =>{
+                _MainWindow.Telegram_Logs.Items.Add($"Printing File: {fileName} with Printer: {pdfdocument.PrintSettings.PrinterName}");
+            });
+            pdfdocument.Print();
+            pdfdocument.Dispose();
             return true;
+
         }
         catch(Exception ex)
         {
@@ -42,47 +49,47 @@ public class DocumentPrinter
             return false;
         }
     }
-    public bool printWithIronPdf(string docPath)
-    {
-        try
-        {
-            //Load a PDF document
+    //public bool printWithIronPdf(string docPath)
+    //{
+    //    try
+    //    {
+    //        //Load a PDF document
 
-            IronPdf.ChromePdfRenderer Renderer = new IronPdf.ChromePdfRenderer();
+    //        IronPdf.ChromePdfRenderer Renderer = new IronPdf.ChromePdfRenderer();
 
-            using IronPdf.PdfDocument Pdf = new IronPdf.PdfDocument(docPath);
-            // Send the PDF to the default printer to print
-            Pdf.Print();
-            return true;
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex);
-            MessageBox.Show(ex.Message);
-            return false;
-        }
-    }
+    //        using IronPdf.PdfDocument Pdf = new IronPdf.PdfDocument(docPath);
+    //        // Send the PDF to the default printer to print
+    //        Pdf.Print();
+    //        return true;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Debug.WriteLine(ex);
+    //        MessageBox.Show(ex.Message);
+    //        return false;
+    //    }
+    //}
 
-    public bool printWithDynamicPdf(string docPath,int mode=1)
-    {
-        try
-        {
-            // Create a print job with the document to be printed to the default printer
-            PrintJob printJob = new PrintJob(Printer.Default, docPath);
-            if(mode==2)
-            {
-                printJob.PrintOptions.DuplexMode = DuplexMode.DuplexVertical;
-            }
+    //public bool printWithDynamicPdf(string docPath,int mode=1)
+    //{
+    //    try
+    //    {
+    //        // Create a print job with the document to be printed to the default printer
+    //        PrintJob printJob = new PrintJob(Printer.Default, docPath);
+    //        if(mode==2)
+    //        {
+    //            printJob.PrintOptions.DuplexMode = DuplexMode.DuplexVertical;
+    //        }
             
-            // Print the print job
-            printJob.Print();
-            return true;
-        }
-        catch (Exception ex)
-        {
-            Debug.WriteLine(ex);
-            MessageBox.Show(ex.Message);
-            return false;
-        }
-    }
+    //        // Print the print job
+    //        printJob.Print();
+    //        return true;
+    //    }
+    //    catch (Exception ex)
+    //    {
+    //        Debug.WriteLine(ex);
+    //        MessageBox.Show(ex.Message);
+    //        return false;
+    //    }
+    //}
 }

@@ -2,7 +2,10 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Printing;
 using System.IO;
+using System.Printing;
+using Spire.Pdf;
 using System.Windows;
 
 namespace TelegramPrinterWPF.Source;
@@ -16,30 +19,48 @@ public class DocumentPrinter1
     }
 
 
-    public bool printWithDynamicPdf(string fileName,int mode=1)
+    public bool printFoxitcPdf(string fileName,int mode=1)
     {
         try
         {
-            //var filepath = @"C:\\Users\\Zeeshan\\source\\repos\\zeeshanbage\\PrinterApp\\TelegramPrinterWPF\\bin\\Debug\\net7.0-windows\" + fileName;
-            string fileDir1 = @"C:\Program Files (x86)\Foxit Software\Foxit PDF Reader\FoxitPDFReader.exe";
-            Process pdfProcess = new Process();
-            pdfProcess.StartInfo.FileName = fileDir1;
-            pdfProcess.StartInfo.Arguments = string.Format(@"/t {0} {1}", fileName, "pos-80");
-            pdfProcess.StartInfo.CreateNoWindow = true;
-            pdfProcess.StartInfo.WorkingDirectory = Path.GetDirectoryName(fileDir1);
-            pdfProcess.Start();
-
-            if (!pdfProcess.WaitForExit(2500))
+            var printerSettings = new PrinterSettings
             {
-                pdfProcess.Kill();
+                PrinterName = "OneNote for Windows 10",
+                Copies = (short)1
+            };
 
-            }
+            MessageBox.Show(printerSettings.CanDuplex.ToString());
+            //string strPrintFile = "D:\\Application2.pdf";
+            ProcessStartInfo info = new ProcessStartInfo(fileName);
+            info.Verb = "Print";
+            info.FileName = @"C:\Program Files (x86)\Foxit Software\Foxit PDF Reader\FoxitPDFReader.exe";
+            info.CreateNoWindow = true;
+            info.WindowStyle = ProcessWindowStyle.Hidden;
+            //fs.Close();
+            Process.Start(info);
             return true;
         }
         catch (Exception ex)
         {
             Debug.WriteLine(ex);
             MessageBox.Show(ex.Message);
+            return false;
+        }
+    }
+    public bool PrintPDFium(string filepath, int copies=1)
+    {
+        try
+        {
+            PdfDocument pdfdocument = new PdfDocument();
+            pdfdocument.LoadFromFile(filepath);
+            pdfdocument.PrintSettings.PrinterName = "OneNote for Windows 10";
+            pdfdocument.PrintSettings.Copies = 2;
+            pdfdocument.Print();
+            pdfdocument.Dispose();
+            return true;
+        }
+        catch (System.Exception e)
+        {
             return false;
         }
     }

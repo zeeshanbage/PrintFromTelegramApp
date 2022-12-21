@@ -50,16 +50,16 @@ namespace TelegramPrinterWPF
 
         private void TestPrintButton_Click(object sender, RoutedEventArgs e)
         {
-            var TestPrinter = new DocumentPrinter1();
+            var TestPrinter = new DocumentPrinter(this);
             bool printed=false;
             MessageBoxResult result = MessageBox.Show("Yes- For duplex print. No- for 1 side", "Printing the PDF", MessageBoxButton.YesNoCancel);
             if (result == MessageBoxResult.Yes)
             {
-                printed = TestPrinter.printWithDynamicPdf("C:\\Users\\Zeeshan\\source\\repos\\zeeshanbage\\PrinterApp\\TelegramPrinterWPF\\bin\\Debug\\net7.0-windows\\DowloadedFiles\\Zeeshanbage_decbill.pdf", 2);
+                printed = TestPrinter.printWithSpire("C:\\Users\\Zeeshan\\source\\repos\\zeeshanbage\\PrinterApp\\TelegramPrinterWPF\\bin\\Debug\\net7.0-windows\\DowloadedFiles\\Zeeshanbage_decbill.pdf", 2,2);
             }
             else if(result == MessageBoxResult.No)
             {
-                printed = TestPrinter.printWithDynamicPdf("./DowloadedFiles/Zeeshanbage_certificate.pdf");
+                printed = TestPrinter.printWithSpire("./DowloadedFiles/Zeeshanbage_certificate.pdf");
             }
             else
             {
