@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -70,15 +69,20 @@ namespace TelegramPrinterWPF.Source
                 var downloadFile = new DocFile(await DownloadFile(message, botClient));
 
                 _documentPrinter = new DocumentPrinter(MainWindow);
-
-                PrintWindow printWindow;
                 var userName = message.Chat.FirstName+ " " + message.Chat.LastName;
+
+                //Showing Notification 
+
+
+                //showing Print Window
+                PrintWindow printWindow;
                 Application.Current.Dispatcher.Invoke((Action)delegate {
                     printWindow = new PrintWindow(downloadFile, userName);
                     takePrint = printWindow.ShowDialog();
                     if (takePrint == true)
                     {
-                        printresult = _documentPrinter.printWithSpire(downloadFile, printWindow.DuplexPrint.IsChecked, short.Parse(printWindow.NoOfCopies.Text));
+                        var NoofCopies = printWindow.NoOfCopies.Text!=string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
+                        printresult = _documentPrinter.printWithSpire(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
                     }
                     Debug.WriteLine("Returned to the Main window");
                 });

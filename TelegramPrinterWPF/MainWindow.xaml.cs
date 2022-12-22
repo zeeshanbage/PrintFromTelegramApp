@@ -61,10 +61,13 @@ namespace TelegramPrinterWPF
             var user = "Zeeshan";
             PrintWindow printWindow = new PrintWindow(file, user);
 
+
             var x= printWindow.ShowDialog();
             if(x==true)
             {
-                printed = TestPrinter.printWithSpire(file, printWindow.DuplexPrint.IsChecked, short.Parse(printWindow.NoOfCopies.Text));
+                var NoofCopies = printWindow.NoOfCopies.Text != string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
+
+                printed = TestPrinter.printWithSpire(file, printWindow.DuplexPrint.IsChecked, NoofCopies);
             }
             Debug.WriteLine("passed to the window");
 

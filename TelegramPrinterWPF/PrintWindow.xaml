@@ -13,8 +13,8 @@
             <ColumnDefinition Width="99*"/>
         </Grid.ColumnDefinitions>
 
-        <TextBox x:Name="NoOfCopies" PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" Margin="75,126,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="57" BorderBrush="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" RenderTransformOrigin="0.25,2.512"/>
-        <Label Content="Copies " HorizontalAlignment="Left" Margin="14,118,0,0" VerticalAlignment="Top" Width="59" Height="26">
+        <TextBox x:Name="NoOfCopies" PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" Margin="75,121,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="57" BorderBrush="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" RenderTransformOrigin="0.25,2.512"/>
+        <Label Content="Copies " HorizontalAlignment="Left" Margin="14,117,0,0" VerticalAlignment="Top" Width="59" Height="26">
             <Label.BorderBrush>
                 <ImageBrush/>
             </Label.BorderBrush>
