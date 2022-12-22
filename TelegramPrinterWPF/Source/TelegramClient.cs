@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -57,9 +58,9 @@ namespace TelegramPrinterWPF.Source
         }
         public async Task HandleUpdateAsync(ITelegramBotClient botClient, Update update, CancellationToken cancellationToken)
         {
-            // Only process Message updates: https://core.telegram.org/bots/api#message
             if (update.Message is not { } message)
                 return;
+
             if (message.Document is not null)
             {
                 var filePath = await DownloadFile(message, botClient);
@@ -67,13 +68,14 @@ namespace TelegramPrinterWPF.Source
                 bool? takePrint=false;
                 _documentPrinter = new DocumentPrinter(MainWindow);
                 PrintWindow printWindow;
-                
+                var userName = message.Chat.FirstName+ " " + message.Chat.LastName;
+                var fileName = filePath.Split('/').Last();
                 Application.Current.Dispatcher.Invoke((Action)delegate {
-                    printWindow = new PrintWindow();
+                    printWindow = new PrintWindow(fileName, userName);
                     takePrint = printWindow.ShowDialog();
                     if (takePrint == true)
                     {
-                        printresult = _documentPrinter.printWithSpire(filePath, printWindow.isDuplexPrint.IsChecked, short.Parse(printWindow.NoOfCopies.Text));
+                        printresult = _documentPrinter.printWithSpire(filePath, printWindow.DuplexPrint.IsChecked, short.Parse(printWindow.NoOfCopies.Text));
                     }
                     Debug.WriteLine("Returned to the Main window");
                 });

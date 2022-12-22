@@ -12,15 +12,19 @@
             <ColumnDefinition Width="59*"/>
             <ColumnDefinition Width="99*"/>
         </Grid.ColumnDefinitions>
-        <RadioButton x:Name="isDuplexPrint" Content="Duplex Print" HorizontalAlignment="Left" Margin="268,66,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.153,-0.382" Grid.ColumnSpan="2" BorderBrush="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-        <TextBox x:Name="NoOfCopies" PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" Margin="111,64,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="44" BorderBrush="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}"/>
-        <Label Content="No Of Copies" HorizontalAlignment="Left" Margin="10,60,0,0" VerticalAlignment="Top" Width="96">
+
+        <TextBox x:Name="NoOfCopies" PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" Margin="75,126,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="57" BorderBrush="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" RenderTransformOrigin="0.25,2.512"/>
+        <Label Content="Copies " HorizontalAlignment="Left" Margin="14,118,0,0" VerticalAlignment="Top" Width="59" Height="26">
             <Label.BorderBrush>
                 <ImageBrush/>
             </Label.BorderBrush>
         </Label>
         <Button x:Name="Print" Content="Print" HorizontalAlignment="Left" Margin="126,157,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.312,-0.066" Height="24" Width="84" Background="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" Foreground="White" Click="Print_Click"/>
         <Button x:Name="Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="280,157,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.312,-0.066" Height="24" Width="84" Foreground="#FFDA4040" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" Grid.ColumnSpan="2" Click="Cancel_Click"/>
+        <CheckBox x:Name="DuplexPrint" Content="Duplex Print" HorizontalAlignment="Left" Margin="74,88,0,0" VerticalAlignment="Top" Height="18" Width="99" BorderBrush="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" RenderTransformOrigin="0.354,0.447"/>
+        <Image x:Name="Thumbnail" HorizontalAlignment="Left" Height="44" Margin="14,19,0,0" VerticalAlignment="Top" Width="41"/>
+        <Label x:Name="FileName" Content="FileName :" HorizontalAlignment="Left" Margin="70,19,0,0" VerticalAlignment="Top" Width="393" BorderBrush="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Background="{x:Null}" Grid.ColumnSpan="3"/>
+        <Label x:Name="UserName" Content="User :" HorizontalAlignment="Left" Margin="70,50,0,0" VerticalAlignment="Top" Width="409" Grid.ColumnSpan="3"/>
 
     </Grid>
 

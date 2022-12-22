@@ -6,7 +6,25 @@
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>PrintFromTelegram.ico</ApplicationIcon>
+    <PackageIcon>icons8-print-96.png</PackageIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="PrintFromTelegram.ico" />
+    <None Remove="Static\file.png" />
+    <None Remove="Static\pdf.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="PrintFromTelegram.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Static\file.png" />
+    <Resource Include="Static\pdf.png" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <PackageReference Include="ceTe.DynamicPDF.Printing.NET" Version="4.19.0" />

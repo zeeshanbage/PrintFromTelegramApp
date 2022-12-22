@@ -21,9 +21,32 @@ namespace TelegramPrinterWPF
     /// </summary>
     public partial class PrintWindow : Window
     {
+
         public PrintWindow()
         {
             InitializeComponent();
+        }
+        public PrintWindow(string filePath, string user)
+        {
+            InitializeComponent();
+            FileName.Content = "File : " + filePath;
+            UserName.Content = "User : " + user;
+            BitmapImage image = new BitmapImage();
+            switch(filePath.Split('.').Last())
+            {
+                case "pdf":
+                    image.BeginInit();
+                    image.UriSource = new Uri("pack://application:,,,/Static/pdf.png");
+                    image.EndInit();
+                    break;
+                default:
+                    image.BeginInit();
+                    image.UriSource = new Uri("pack://application:,,,/Static/file.png");
+                    image.EndInit();
+                    break;
+            }
+
+            Thumbnail.Source= image;
         }
 
 
@@ -37,12 +60,15 @@ namespace TelegramPrinterWPF
         {
             DialogResult = true;
             Hide();
+            Close();
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             DialogResult= false;
             Hide();
+            Close();
         }
+
     }
 }

@@ -33,7 +33,7 @@ public class DocumentPrinter
             {
                 pdfdocument.PrintSettings.Duplex = Duplex.Vertical;
             }
-            var fileName=filePath.Split(@"/").LastOrDefault();
+            var fileName=filePath.Split('/').LastOrDefault();
             _MainWindow.Telegram_Logs.Items.Dispatcher.Invoke(() =>{
                 _MainWindow.Telegram_Logs.Items.Add($"Printing File: {fileName} with Printer: {pdfdocument.PrintSettings.PrinterName}");
             });
