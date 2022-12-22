@@ -12,6 +12,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TelegramPrinterWPF.Models;
 using TelegramPrinterWPF.Source;
 
 namespace TelegramPrinterWPF
@@ -22,17 +23,17 @@ namespace TelegramPrinterWPF
     public partial class PrintWindow : Window
     {
 
-        public PrintWindow()
+        public PrintWindow(Models.DocFile downloadFile)
         {
             InitializeComponent();
         }
-        public PrintWindow(string filePath, string user)
+        public PrintWindow(DocFile file, string user)
         {
             InitializeComponent();
-            FileName.Content = "File : " + filePath;
+            FileName.Content = "File : " + file.Name;
             UserName.Content = "User : " + user;
             BitmapImage image = new BitmapImage();
-            switch(filePath.Split('.').Last())
+            switch(file.Type)
             {
                 case "pdf":
                     image.BeginInit();

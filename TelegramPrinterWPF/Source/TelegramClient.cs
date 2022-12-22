@@ -13,6 +13,7 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using TelegramPrinterWPF.Models;
 using Message = Telegram.Bot.Types.Message;
 
 namespace TelegramPrinterWPF.Source
@@ -63,19 +64,21 @@ namespace TelegramPrinterWPF.Source
 
             if (message.Document is not null)
             {
-                var filePath = await DownloadFile(message, botClient);
                 bool printresult;
-                bool? takePrint=false;
+                bool? takePrint = false;
+
+                var downloadFile = new DocFile(await DownloadFile(message, botClient));
+
                 _documentPrinter = new DocumentPrinter(MainWindow);
+
                 PrintWindow printWindow;
                 var userName = message.Chat.FirstName+ " " + message.Chat.LastName;
-                var fileName = filePath.Split('/').Last();
                 Application.Current.Dispatcher.Invoke((Action)delegate {
-                    printWindow = new PrintWindow(fileName, userName);
+                    printWindow = new PrintWindow(downloadFile, userName);
                     takePrint = printWindow.ShowDialog();
                     if (takePrint == true)
                     {
-                        printresult = _documentPrinter.printWithSpire(filePath, printWindow.DuplexPrint.IsChecked, short.Parse(printWindow.NoOfCopies.Text));
+                        printresult = _documentPrinter.printWithSpire(downloadFile, printWindow.DuplexPrint.IsChecked, short.Parse(printWindow.NoOfCopies.Text));
                     }
                     Debug.WriteLine("Returned to the Main window");
                 });

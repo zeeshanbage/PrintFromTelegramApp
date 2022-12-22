@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using System.Windows.Forms.Design;
 using Spire.Pdf;
 using Telegram.Bot.Types;
+using TelegramPrinterWPF.Models;
 
 namespace TelegramPrinterWPF.Source;
 public class DocumentPrinter
@@ -20,12 +21,12 @@ public class DocumentPrinter
     {
         _MainWindow = mainWindow;
     }
-    public bool printWithSpire(string filePath,bool? duplexMode=false, short NoOfCopies=1)
+    public bool printWithSpire(DocFile file,bool? duplexMode=false, short NoOfCopies=1)
     {
         try
         {
-            PdfDocument pdfdocument = new PdfDocument();
-            pdfdocument.LoadFromFile(filePath);
+            using PdfDocument pdfdocument = new PdfDocument();
+            pdfdocument.LoadFromFile(file.Path);
             //pdfdocument.PrintSettings.PrinterName = "OneNote for Windows 10";
             pdfdocument.PrintSettings.Copies = NoOfCopies;
 
@@ -33,9 +34,8 @@ public class DocumentPrinter
             {
                 pdfdocument.PrintSettings.Duplex = Duplex.Vertical;
             }
-            var fileName=filePath.Split('/').LastOrDefault();
             _MainWindow.Telegram_Logs.Items.Dispatcher.Invoke(() =>{
-                _MainWindow.Telegram_Logs.Items.Add($"Printing File: {fileName} with Printer: {pdfdocument.PrintSettings.PrinterName}");
+                _MainWindow.Telegram_Logs.Items.Add($"Printing File: {file.Name} with Printer: {pdfdocument.PrintSettings.PrinterName}");
             });
             pdfdocument.Print();
             pdfdocument.Dispose();

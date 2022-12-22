@@ -11,6 +11,7 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using TelegramPrinterWPF.Models;
 using TelegramPrinterWPF.Source;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -56,14 +57,14 @@ namespace TelegramPrinterWPF
         {
             var TestPrinter = new DocumentPrinter(this);
             bool printed=false;
-            var filePath= "./DowloadedFiles/Zeeshanbage_certificate.pdf";
+            var file= new DocFile("./DowloadedFiles/Zeeshanbage_certificate.pdf");
             var user = "Zeeshan";
-            PrintWindow printWindow = new PrintWindow(filePath, user);
+            PrintWindow printWindow = new PrintWindow(file, user);
 
             var x= printWindow.ShowDialog();
             if(x==true)
             {
-                printed = TestPrinter.printWithSpire(filePath, printWindow.DuplexPrint.IsChecked, short.Parse(printWindow.NoOfCopies.Text));
+                printed = TestPrinter.printWithSpire(file, printWindow.DuplexPrint.IsChecked, short.Parse(printWindow.NoOfCopies.Text));
             }
             Debug.WriteLine("passed to the window");
 
