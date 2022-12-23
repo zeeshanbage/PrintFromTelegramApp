@@ -1,26 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using System.Windows.Media;
 using Telegram.Bot;
 using Telegram.Bot.Polling;
-using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using TelegramPrinterWPF.Models;
 using TelegramPrinterWPF.Source;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace TelegramPrinterWPF
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow 
+    public partial class MainWindow
     {
         CancellationTokenSource cts;
         NotifyIcon notifyIcon;
@@ -56,14 +51,14 @@ namespace TelegramPrinterWPF
         private void TestPrintButton_Click(object sender, RoutedEventArgs e)
         {
             var TestPrinter = new DocumentPrinter(this);
-            bool printed=false;
-            var file= new DocFile("./DowloadedFiles/Zeeshanbage_certificate.pdf");
+            bool printed = false;
+            var file = new DocFile("./DowloadedFiles/Zeeshanbage_certificate.pdf");
             var user = "Zeeshan";
             PrintWindow printWindow = new PrintWindow(file, user);
 
 
-            var x= printWindow.ShowDialog();
-            if(x==true)
+            var x = printWindow.ShowDialog();
+            if (x == true)
             {
                 var NoofCopies = printWindow.NoOfCopies.Text != string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
 

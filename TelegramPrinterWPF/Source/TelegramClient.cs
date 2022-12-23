@@ -4,9 +4,7 @@ using System.IO;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
-
 using System.Windows;
-
 using Telegram.Bot;
 using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
@@ -69,24 +67,25 @@ namespace TelegramPrinterWPF.Source
                 var downloadFile = new DocFile(await DownloadFile(message, botClient));
 
                 _documentPrinter = new DocumentPrinter(MainWindow);
-                var userName = message.Chat.FirstName+ " " + message.Chat.LastName;
+                var userName = message.Chat.FirstName + " " + message.Chat.LastName;
 
                 //Showing Notification 
 
 
                 //showing Print Window
                 PrintWindow printWindow;
-                Application.Current.Dispatcher.Invoke((Action)delegate {
+                Application.Current.Dispatcher.Invoke((Action)delegate
+                {
                     printWindow = new PrintWindow(downloadFile, userName);
                     takePrint = printWindow.ShowDialog();
                     if (takePrint == true)
                     {
-                        var NoofCopies = printWindow.NoOfCopies.Text!=string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
+                        var NoofCopies = printWindow.NoOfCopies.Text != string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
                         printresult = _documentPrinter.printWithSpire(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
                     }
                     Debug.WriteLine("Returned to the Main window");
                 });
-               
+
 
             }
             // Echo if received message text
@@ -159,8 +158,8 @@ namespace TelegramPrinterWPF.Source
             Debug.WriteLine($"Bot is online. Start listening for @{me.Username}");
             MainWindow.Telegram_Logs.Items.Add($"Telegram Bot is online. Started listening for @{me.Username}");
             BotClient.StartReceiving(
-                updateHandler:HandleUpdateAsync,
-                pollingErrorHandler:HandlePollingErrorAsync,
+                updateHandler: HandleUpdateAsync,
+                pollingErrorHandler: HandlePollingErrorAsync,
                 receiverOptions: receiverOptions,
                 cancellationToken: cts.Token
                 );

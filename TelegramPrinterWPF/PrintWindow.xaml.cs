@@ -1,19 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using TelegramPrinterWPF.Models;
-using TelegramPrinterWPF.Source;
 
 namespace TelegramPrinterWPF
 {
@@ -33,7 +23,7 @@ namespace TelegramPrinterWPF
             FileName.Content = "File : " + file.Name;
             UserName.Content = "User : " + user;
             BitmapImage image = new BitmapImage();
-            switch(file.Type)
+            switch (file.Type)
             {
                 case "pdf":
                     image.BeginInit();
@@ -47,7 +37,7 @@ namespace TelegramPrinterWPF
                     break;
             }
 
-            Thumbnail.Source= image;
+            Thumbnail.Source = image;
         }
 
 
@@ -66,7 +56,7 @@ namespace TelegramPrinterWPF
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
-            DialogResult= false;
+            DialogResult = false;
             Hide();
             Close();
         }
