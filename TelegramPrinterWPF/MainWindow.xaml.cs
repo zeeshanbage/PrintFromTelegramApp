@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Diagnostics;
+using System.Drawing.Printing;
 using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
@@ -72,41 +73,13 @@ namespace TelegramPrinterWPF
             if (x == true)
             {
                 var NoofCopies = printWindow.NoOfCopies.Text != string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
-
-                printed = TestPrinter.printWithSpire(file, printWindow.DuplexPrint.IsChecked, NoofCopies);
+                var mode =(bool) printWindow.DuplexPrint.IsChecked ? Duplex.Vertical : Duplex.Simplex;
+                printed = TestPrinter.printWithSpireWithDailog(file,mode , NoofCopies);
             }
             Debug.WriteLine("passed to the window");
 
         }
-        //private void TestPrintButton_Click2(object sender, RoutedEventArgs e)
-        //{
-        //    var TestPrinter = new DocumentPrinter(this);
-        //    bool printed = false;
-
-        //    MessageBoxResult result = MessageBox.Show("Yes- For duplex print. No- for 1 side", "Printing the PDF", MessageBoxButton.YesNoCancel);
-        //    if (result == MessageBoxResult.Yes)
-        //    {
-        //        printed = TestPrinter.printWithSpire("C:\\Users\\Zeeshan\\source\\repos\\zeeshanbage\\PrinterApp\\TelegramPrinterWPF\\bin\\Debug\\net7.0-windows\\DowloadedFiles\\Zeeshanbage_decbill.pdf");
-        //    }
-        //    else if (result == MessageBoxResult.No)
-        //    {
-        //        printed = TestPrinter.printWithSpire("./DowloadedFiles/Zeeshanbage_certificate.pdf");
-        //    }
-        //    else
-        //    {
-        //        return;
-        //    }
-
-
-        //    if (printed)
-        //    {
-        //        TestPrintButton.Background = Brushes.Green;
-        //    }
-        //    else
-        //    {
-        //        TestPrintButton.Background = Brushes.Red;
-        //    }
-        //}
+        
 
 
         private void HandleCheck(object sender, RoutedEventArgs e)

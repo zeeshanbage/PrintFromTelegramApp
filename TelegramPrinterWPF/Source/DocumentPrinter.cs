@@ -5,7 +5,9 @@ using System.Drawing.Printing;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
+using System.Windows.Forms;
 using TelegramPrinterWPF.Models;
+using PrintDialog = System.Windows.Forms.PrintDialog;
 
 namespace TelegramPrinterWPF.Source;
 public class DocumentPrinter
@@ -35,13 +37,52 @@ public class DocumentPrinter
             });
             pdfdocument.Print();
             pdfdocument.Dispose();
+
             return true;
 
         }
         catch (Exception ex)
         {
             Debug.WriteLine(ex);
-            MessageBox.Show("Error", ex.Message);
+            System.Windows.MessageBox.Show("Error", ex.Message);
+            return false;
+        }
+    }
+    public bool printWithSpireWithDailog(DocFile file, Duplex mode=Duplex.Simplex, short NoOfCopies = 1)
+    {
+        try
+        {
+            using PdfDocument doc = new PdfDocument();
+            doc.LoadFromFile(file.Path);
+            //pdfdocument.PrintSettings.PrinterName = "OneNote for Windows 10";
+            PrintDialog dialogPrint = new PrintDialog();
+            dialogPrint.AllowPrintToFile = true;
+            dialogPrint.AllowSomePages = true;
+            dialogPrint.PrinterSettings.MinimumPage = 1;
+            dialogPrint.PrinterSettings.MaximumPage = doc.Pages.Count;
+            dialogPrint.PrinterSettings.FromPage = 1;
+            dialogPrint.PrinterSettings.ToPage = doc.Pages.Count;
+            dialogPrint.PrinterSettings.Copies = NoOfCopies;
+            dialogPrint.PrinterSettings.Duplex = mode;
+
+            if (dialogPrint.ShowDialog() == DialogResult.OK)
+            {
+                ////Set the pagenumber which you choose as the start page to print
+                //doc.s = dialogPrint.PrinterSettings.FromPage;
+                ////Set the pagenumber which you choose as the final page to print
+                //doc.PrintToPage = dialogPrint.PrinterSettings.ToPage;
+                ////Set the name of the printer which is to print the PDF
+                //doc.PrinterName = dialogPrint.PrinterSettings.PrinterName;
+
+                doc.Print();
+            }
+            return true;
+
+        }
+        catch (Exception ex)
+        {
+            Debug.WriteLine(ex);
+            System.Windows.MessageBox.Show("Error", ex.Message);
             return false;
         }
     }
@@ -74,4 +115,5 @@ public class DocumentPrinter
             return false;
         }
     }
+
 }
