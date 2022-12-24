@@ -55,7 +55,7 @@ namespace TelegramPrinterWPF.Source
             if (update.Message is not { } message)
                 return;
 
-            if (message.Document is not null)
+            if (message.Document is not null || message.Photo is not null)
             {
                 bool printresult;
                 bool? takePrint = false;
@@ -77,7 +77,18 @@ namespace TelegramPrinterWPF.Source
                     if (takePrint == true)
                     {
                         var NoofCopies = printWindow.NoOfCopies.Text != string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
-                        printresult = _documentPrinter.printWithSpire(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
+                        switch (downloadFile.Type)
+                        {
+                            case "pdf":
+                                printresult = _documentPrinter.printWithSpire(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
+                                break;
+                            case "jpj":
+                            case "png":
+                                printresult = _documentPrinter.printImage(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
+                                break;
+
+
+                        }
                     }
                     Debug.WriteLine("Returned to the Main window");
                 });
@@ -125,16 +136,27 @@ namespace TelegramPrinterWPF.Source
 
         private async Task<string> DownloadFile(Message message, ITelegramBotClient botClient)
         {
-            Debug.WriteLine(JsonSerializer.Serialize(message.Document)); 
-            var file = await botClient.GetFileAsync(message.Document.FileId);   
-            var filepath = "./DowloadedFiles/" + message.From?.Username + "_" + message.Document.FileName;
-            //var absfilepath = Directory.GetCurrentDirectory()+filepath.TrimStart('.');
-            //Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filepath));
+            Debug.WriteLine(JsonSerializer.Serialize(message.Document));
+            Telegram.Bot.Types.File file;
+            string filename;
+            if(message.Type == MessageType.Photo)
+            {
+                file = await botClient.GetFileAsync(message.Photo[0].FileId);
+                filename = message.Photo[0].FileId + ".jpg";
+            }
+            else
+            {
+                file = await botClient.GetFileAsync(message.Document.FileId);
+                filename = message.Document.FileName;
+
+            }
+            var filepath = ConfigurationManager.AppSettings["DownloadFolder"] + message.From?.Username + "_" + filename;
+
             var fs = new FileStream(filepath, FileMode.Create);
             if (file.FilePath != null) await botClient.DownloadFileAsync(file.FilePath, fs);
-            Debug.WriteLine($"file downloaded {message.Document.FileName} path {filepath}");
+            Debug.WriteLine($"file downloaded {filename} path {filepath}");
             MainWindow.Dispatcher?.Invoke(() =>
-            MainWindow.Telegram_Logs.Items.Add($"file downloaded {message.Document.FileName} path {filepath}")
+            MainWindow.Telegram_Logs.Items.Add($"file downloaded {filename} path {filepath}")
             );
             fs.Close();
             await fs.DisposeAsync();
