@@ -41,7 +41,7 @@ namespace TelegramPrinterWPF
             var telegramHelper = new TelegramClient(this);
             Debug.WriteLine($"Start listening for ");
             var me = telegramHelper.BotClient.GetMeAsync();
-            Telegram_Logs.Items.Add($"Telegram Bot is Online ID:{me.Result.Id} Name: {me.Result.Username} ");
+            Telegram_Logs.Items.Add($"Telegram Bot is Online ID:{me.Result.Id} Name: {me.Result.FirstName} ");
             ToggleBot.Content = "Stop Bot";
             ReceiverOptions receiverOptions = new()
             {

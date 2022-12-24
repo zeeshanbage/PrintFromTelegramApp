@@ -40,7 +40,7 @@ namespace TelegramPrinterWPF.Windows
                 Configuration config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 config.AppSettings.Settings.Add("DownloadFolder", dialog.SelectedPath);
                 config.AppSettings.Settings["FirstStartup"].Value = "false";
-                ConfigurationManager.AppSettings.Set("TelegramBotToken", BotToken.Text);
+                config.AppSettings.Settings.Add("TelegramBotToken", BotToken.Text);
                 config.Save(ConfigurationSaveMode.Full);
                 ConfigurationManager.RefreshSection("appSettings");
 

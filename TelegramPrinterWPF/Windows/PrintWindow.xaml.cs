@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Configuration;
+using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
@@ -61,9 +63,9 @@ namespace TelegramPrinterWPF
 
         private void OpenFile_Click(object sender, RoutedEventArgs e)
         {
-            var root = Directory.GetCurrentDirectory() + DocFile.Path.TrimStart('.');
+            var root = ConfigurationManager.AppSettings["DownloadFolder"];
+            System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", root);
 
-            System.Diagnostics.Process.Start(root);
         }
     }
 }
