@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.Threading;
 using System.Windows;
@@ -9,6 +10,7 @@ using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 using TelegramPrinterWPF.Models;
 using TelegramPrinterWPF.Source;
+using TelegramPrinterWPF.Windows;
 
 namespace TelegramPrinterWPF
 {
@@ -21,17 +23,25 @@ namespace TelegramPrinterWPF
         NotifyIcon notifyIcon;
         public MainWindow()
         {
-            cts = new();
-            Loaded += MyWindow_Loaded;
+            cts = new(); 
+
+            if (ConfigurationManager.AppSettings["FirstStartup"]=="true")
+            {
+                SetupAppForFirstUse();
+            }
             InitializeComponent();
-            notifyIcon = new NotifyIcon();
-            notifyIcon.Visible = true;
+
+            Loaded += MyWindow_Loaded;
+            
         }
+
+
         private void MyWindow_Loaded(object sender, RoutedEventArgs e)
         {
             var telegramHelper = new TelegramClient(this);
             Debug.WriteLine($"Start listening for ");
-            Telegram_Logs.Items.Add($"Telegram Bot is Online");
+            var me = telegramHelper.BotClient.GetMeAsync();
+            Telegram_Logs.Items.Add($"Telegram Bot is Online ID:{me.Result.Id} Name: {me.Result.Username} ");
             ToggleBot.Content = "Stop Bot";
             ReceiverOptions receiverOptions = new()
             {
@@ -52,7 +62,8 @@ namespace TelegramPrinterWPF
         {
             var TestPrinter = new DocumentPrinter(this);
             bool printed = false;
-            var file = new DocFile("./DowloadedFiles/Zeeshanbage_certificate.pdf");
+            var downloadFolder = ConfigurationManager.AppSettings["DownloadFolder"];
+            var file = new DocFile(downloadFolder+"/doc.pdf");
             var user = "Zeeshan";
             PrintWindow printWindow = new PrintWindow(file, user);
 
@@ -115,5 +126,10 @@ namespace TelegramPrinterWPF
             System.Diagnostics.Process.Start(System.Windows.Application.ResourceAssembly.Location);
         }
 
+        private void SetupAppForFirstUse()
+        {
+            Startup startup = new Startup();
+            startup.ShowDialog();
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
@@ -12,18 +13,15 @@ namespace TelegramPrinterWPF
     /// </summary>
     public partial class PrintWindow : Window
     {
-
-        public PrintWindow(Models.DocFile downloadFile)
-        {
-            InitializeComponent();
-        }
+        DocFile DocFile;
         public PrintWindow(DocFile file, string user)
         {
+            DocFile = file;
             InitializeComponent();
-            FileName.Content = "File : " + file.Name;
+            FileName.Content = "File : " + DocFile.Name;
             UserName.Content = "User : " + user;
             BitmapImage image = new BitmapImage();
-            switch (file.Type)
+            switch (DocFile.Type)
             {
                 case "pdf":
                     image.BeginInit();
@@ -61,5 +59,11 @@ namespace TelegramPrinterWPF
             Close();
         }
 
+        private void OpenFile_Click(object sender, RoutedEventArgs e)
+        {
+            var root = Directory.GetCurrentDirectory() + DocFile.Path.TrimStart('.');
+
+            System.Diagnostics.Process.Start(root);
+        }
     }
 }

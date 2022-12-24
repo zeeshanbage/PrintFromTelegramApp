@@ -10,10 +10,6 @@ public class DocumentPrinter
 {
     MainWindow _MainWindow;
 
-    public DocumentPrinter()
-    {
-
-    }
     public DocumentPrinter(MainWindow mainWindow)
     {
         _MainWindow = mainWindow;

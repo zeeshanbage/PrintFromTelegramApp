@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Diagnostics;
 using System.IO;
 using System.Text.Json;
@@ -20,14 +21,11 @@ namespace TelegramPrinterWPF.Source
         public readonly TelegramBotClient BotClient;
         private DocumentPrinter _documentPrinter;
         private MainWindow MainWindow;
-        public TelegramClient()
-        {
-            BotClient = new TelegramBotClient("5744763753:AAFV98ovmx_LGfFPeFGYXH3zjBOqw-NLTPU");
-        }
+
         public TelegramClient(MainWindow mainWindow)
         {
             MainWindow = mainWindow;
-            BotClient = new TelegramBotClient("5744763753:AAFV98ovmx_LGfFPeFGYXH3zjBOqw-NLTPU");
+            BotClient = new TelegramBotClient(ConfigurationManager.AppSettings["TelegramBotToken"]);
         }
         public async Task TelegramBotClientAsync(CancellationToken stoppingToken)
         {
@@ -45,8 +43,6 @@ namespace TelegramPrinterWPF.Source
                 cancellationToken: stoppingToken
             );
 
-            var me = await BotClient.GetMeAsync();
-            Debug.WriteLine($"Start listening for @{me.Username}");
 
         }
 
@@ -129,8 +125,8 @@ namespace TelegramPrinterWPF.Source
 
         private async Task<string> DownloadFile(Message message, ITelegramBotClient botClient)
         {
-            Debug.WriteLine(JsonSerializer.Serialize(message.Document));
-            var file = await botClient.GetFileAsync(message.Document.FileId);
+            Debug.WriteLine(JsonSerializer.Serialize(message.Document)); 
+            var file = await botClient.GetFileAsync(message.Document.FileId);   
             var filepath = "./DowloadedFiles/" + message.From?.Username + "_" + message.Document.FileName;
             //var absfilepath = Directory.GetCurrentDirectory()+filepath.TrimStart('.');
             //Directory.CreateDirectory(System.IO.Path.GetDirectoryName(filepath));
