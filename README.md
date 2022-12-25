@@ -5,6 +5,9 @@ Kind of self service. (Dont worry, before taking print out, this app will show y
 
 # How to setup?
 Install a app in your windows machine.
+
 Enter Your Telegram Bot Token ID (https://www.siteguarding.com/en/how-to-get-telegram-bot-api-token)
+
 Select the Folder you want to keep downloaded files.
+
 You app is ready.
