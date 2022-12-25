@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
@@ -39,7 +40,7 @@ namespace TelegramPrinterWPF.Source
             if (update.Message is not { } message)
                 return;
 
-            if (message.Type == MessageType.Document || message.Type== MessageType.Photo)
+            if (message.Type == MessageType.Document || message.Type == MessageType.Photo)
             {
 
                 var downloadFile = new DocFile(await DownloadFile(message, botClient));
@@ -54,40 +55,13 @@ namespace TelegramPrinterWPF.Source
                 var userName = message.Chat.FirstName + " " + message.Chat.LastName;
                 var printresult = PrintDocument(downloadFile, userName);
 
+
             }
             // Echo if received message text
             if (message.Text is not null)
             {
                 await SendMessage(message, botClient, cancellationToken);
             }
-        }
-
-        private bool? PrintDocument(DocFile downloadFile, string userName)
-        {
-            bool? takePrint = false;
-            PrintWindow printWindow;
-            bool printResult = false;
-            Application.Current.Dispatcher.Invoke((Action)delegate
-            {
-                printWindow = new PrintWindow(downloadFile, userName);
-                takePrint = printWindow.ShowDialog();
-                if (takePrint == true)
-                {
-                    var NoofCopies = printWindow.NoOfCopies.Text != string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
-                    switch (downloadFile.Type)
-                    {
-                        case "pdf":
-                            printResult= _documentPrinter.printWithSpire(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
-                            break;
-                        case "jpj":
-                        case "png":
-                            printResult= _documentPrinter.printImage(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
-                            break;
-                    }
-                }
-                Debug.WriteLine("Returned to the Main window");
-            });
-            return printResult;
         }
 
         public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
@@ -135,8 +109,8 @@ namespace TelegramPrinterWPF.Source
             string filename;
             if(message.Type == MessageType.Photo)
             {
-                file = await botClient.GetFileAsync(message.Photo[0].FileId);
-                filename = message.Photo[0].FileId + ".jpg";
+                file = await botClient.GetFileAsync(message.Photo[message.Photo.Length - 1].FileId);
+                filename = file.FilePath.Split('/').Last();
             }
             else
             {
@@ -144,7 +118,7 @@ namespace TelegramPrinterWPF.Source
                 filename = message.Document.FileName;
 
             }
-            var filepath = ConfigurationManager.AppSettings["DownloadFolder"] + message.From?.Username + "_" + filename;
+            var filepath = ConfigurationManager.AppSettings["DownloadFolder"] + @"\" +message.From?.Username + "_" + filename;
 
             var fs = new FileStream(filepath, FileMode.Create);
             if (file.FilePath != null) await botClient.DownloadFileAsync(file.FilePath, fs);
@@ -178,6 +152,34 @@ namespace TelegramPrinterWPF.Source
 
 
 
+        }
+
+        private bool? PrintDocument(DocFile downloadFile, string userName)
+        {
+            bool? takePrint = false;
+            PrintWindow printWindow;
+            bool printResult = false;
+            Application.Current.Dispatcher.Invoke((Action)delegate
+            {
+                printWindow = new PrintWindow(downloadFile, userName);
+                takePrint = printWindow.ShowDialog();
+                if (takePrint == true)
+                {
+                    var NoofCopies = printWindow.NoOfCopies.Text != string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
+                    switch (downloadFile.Type)
+                    {
+                        case "pdf":
+                            printResult = _documentPrinter.printWithSpire(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
+                            break;
+                        case "jpj":
+                        case "png":
+                            printResult = _documentPrinter.printImage2(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
+                            break;
+                    }
+                }
+                Debug.WriteLine("Returned to the Main window");
+            });
+            return printResult;
         }
     }
 }

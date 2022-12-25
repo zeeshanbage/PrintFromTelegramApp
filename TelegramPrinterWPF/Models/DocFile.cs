@@ -7,7 +7,7 @@ namespace TelegramPrinterWPF.Models
         public DocFile(string path)
         {
             Path = path;
-            Name = path.Split('/').Last();
+            Name = path.Split(@"\").Last();
             Type = Name.Split('.').Last();
         }
         public string Name { get; set; }

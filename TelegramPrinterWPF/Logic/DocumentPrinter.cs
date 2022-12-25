@@ -99,16 +99,49 @@ public class DocumentPrinter
             image.Source = new BitmapImage(new Uri(downloadFile.Path, UriKind.Absolute));
 
             // Set the page size and margins
-            Size pageSize = new Size(printDialog.PrintableAreaWidth, printDialog.PrintableAreaHeight);
+            Size pageSize = new Size(printDialog.PrintableAreaWidth, printDialog.PrintableAreaHeight);          
             image.Measure(pageSize);
             image.Arrange(new Rect(5, 5, pageSize.Width, pageSize.Height));
-
             // Print the image
             printDialog.PrintVisual(image, "Print Image");
 
             return true;
         }
         catch(Exception ex)
+        {
+            Debug.WriteLine(ex);
+            System.Windows.Forms.MessageBox.Show("Error", ex.Message);
+            return false;
+        }
+    }
+    public bool printImage2(DocFile file, bool? isChecked, short noofCopies)
+    {
+
+        try
+        {
+            // Create a PrintDialog object
+            System.Windows.Controls.PrintDialog imagePrintDialog = new System.Windows.Controls.PrintDialog();
+
+            // Set the image to print
+            Image image = new Image();
+            image.Source = new BitmapImage(new Uri(file.Path, UriKind.Absolute));
+
+            // Set the page size and margins
+            Size pageSize = new Size(imagePrintDialog.PrintableAreaWidth, imagePrintDialog.PrintableAreaHeight);
+            image.Measure(pageSize);
+            image.Arrange(new Rect(5, 5, pageSize.Width, pageSize.Height));
+
+            // Print the image
+            //imagePrintDialog.ShowDialog();
+            if(imagePrintDialog.ShowDialog() == true)
+            {
+                imagePrintDialog.PrintVisual(image, "Print Image");
+            }
+            
+
+            return true;
+        }
+        catch (Exception ex)
         {
             Debug.WriteLine(ex);
             System.Windows.Forms.MessageBox.Show("Error", ex.Message);
