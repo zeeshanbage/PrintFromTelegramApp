@@ -12,7 +12,9 @@
 
   <ItemGroup>
     <None Remove="PrintFromTelegram.ico" />
+    <None Remove="Static\docx.png" />
     <None Remove="Static\file.png" />
+    <None Remove="Static\jpg.png" />
     <None Remove="Static\pdf.png" />
   </ItemGroup>
 
@@ -21,7 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Static\docx.png" />
     <Resource Include="Static\file.png" />
+    <Resource Include="Static\jpg.png" />
     <Resource Include="Static\pdf.png" />
   </ItemGroup>
 

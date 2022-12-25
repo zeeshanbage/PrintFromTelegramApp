@@ -5,27 +5,27 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TelegramPrinterWPF"
         mc:Ignorable="d"
-        Title="PrintWindow" Height="226" Width="490" WindowStartupLocation="CenterScreen" Background="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}">
-    <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}" Margin="0,0,10,0">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="331*"/>
-            <ColumnDefinition Width="59*"/>
-            <ColumnDefinition Width="99*"/>
-        </Grid.ColumnDefinitions>
+        Title="PrintWindow" Height="226" Width="482" WindowStartupLocation="CenterScreen" Background="{DynamicResource {x:Static SystemColors.ActiveCaptionBrushKey}}" BorderBrush="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}">
+    <Grid Background="{DynamicResource {x:Static SystemColors.ControlBrushKey}}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="52*"/>
+            <RowDefinition Height="53*"/>
+        </Grid.RowDefinitions>
 
-        <TextBox x:Name="NoOfCopies" PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" Margin="75,121,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="57" BorderBrush="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" RenderTransformOrigin="0.25,2.512" Height="18"/>
-        <Label Content="Copies " HorizontalAlignment="Left" Margin="14,117,0,0" VerticalAlignment="Top" Width="59" Height="26">
+
+        <TextBox x:Name="NoOfCopies" PreviewTextInput="NumberValidationTextBox" HorizontalAlignment="Left" Margin="79,17,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="57" BorderBrush="{DynamicResource {x:Static SystemColors.HotTrackBrushKey}}" RenderTransformOrigin="0.25,2.512" Height="18" Grid.Row="1"/>
+        <Label Content="Copies " HorizontalAlignment="Left" Margin="14,13,0,0" VerticalAlignment="Top" Width="59" Height="26" Grid.Row="1">
             <Label.BorderBrush>
                 <ImageBrush/>
             </Label.BorderBrush>
         </Label>
-        <Button x:Name="Print" Content="Print" HorizontalAlignment="Left" Margin="60,157,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.312,-0.066" Height="24" Width="80" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Foreground="White" Click="Print_Click"/>
-        <Button x:Name="Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="15,157,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.312,-0.066" Height="24" Width="80" Foreground="#FFDA4040" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" Click="Cancel_Click" Grid.Column="1" Grid.ColumnSpan="2"/>
-        <CheckBox x:Name="DuplexPrint" Content="Duplex Print" HorizontalAlignment="Left" Margin="74,88,0,0" VerticalAlignment="Top" Height="18" Width="99" BorderBrush="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" RenderTransformOrigin="0.354,0.447"/>
-        <Image x:Name="Thumbnail" HorizontalAlignment="Left" Height="44" Margin="14,19,0,0" VerticalAlignment="Top" Width="41"/>
-        <Label x:Name="FileName" Content="FileName :" HorizontalAlignment="Left" Margin="70,19,0,0" VerticalAlignment="Top" Width="393" BorderBrush="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Background="{x:Null}" Grid.ColumnSpan="3" Height="26"/>
-        <Label x:Name="UserName" Content="User :" HorizontalAlignment="Left" Margin="70,50,0,0" VerticalAlignment="Top" Width="409" Grid.ColumnSpan="3" Height="26"/>
-        <Button x:Name="OpenFile" Content="Open Folder" HorizontalAlignment="Left" Margin="200,157,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.312,-0.066" Height="24" Width="80" Foreground="White" Click="OpenFile_Click" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+        <Button x:Name="Print" Content="Print" HorizontalAlignment="Center" Margin="0,53,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.312,-0.066" Height="24" Width="80" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Foreground="White" Click="Print_Click" Grid.Row="1"/>
+        <Button x:Name="Cancel" Content="Cancel" HorizontalAlignment="Left" Margin="301,53,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.312,-0.066" Height="24" Width="80" Foreground="#FFDA4040" BorderBrush="{DynamicResource {x:Static SystemColors.WindowFrameBrushKey}}" Click="Cancel_Click" Grid.Row="1"/>
+        <CheckBox x:Name="DuplexPrint" Content="Duplex Print" HorizontalAlignment="Left" Margin="74,88,0,0" VerticalAlignment="Top" Height="18" Width="99" BorderBrush="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" RenderTransformOrigin="0.354,0.447" Grid.RowSpan="2"/>
+        <Image x:Name="Thumbnail" HorizontalAlignment="Left" Height="44" Margin="14,25,0,0" VerticalAlignment="Top" Width="41"/>
+        <Label x:Name="FileName" Content="FileName :" HorizontalAlignment="Left" Margin="70,19,0,0" VerticalAlignment="Top" Width="393" BorderBrush="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Background="{x:Null}" Height="26"/>
+        <Label x:Name="UserName" Content="User :" HorizontalAlignment="Left" Margin="70,50,0,0" VerticalAlignment="Top" Width="409" Height="26"/>
+        <Button x:Name="OpenFile" Content="Open Folder" HorizontalAlignment="Left" Margin="97,53,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.312,-0.066" Height="24" Width="80" Foreground="White" Click="OpenFile_Click" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Grid.Row="1"/>
         <!--<Button x:Name="PrintDailog" Content="Open Printer" HorizontalAlignment="Left" Margin="15,89,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.312,-0.066" Height="24" Width="80" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Foreground="White" Click="PrintDailog_Click" Grid.Column="1" Grid.ColumnSpan="2"/>-->
 
     </Grid>

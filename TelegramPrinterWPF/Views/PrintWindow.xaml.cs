@@ -23,11 +23,23 @@ namespace TelegramPrinterWPF
             FileName.Content = "File : " + DocFile.Name;
             UserName.Content = "User : " + user;
             BitmapImage image = new BitmapImage();
+
             switch (DocFile.Type)
             {
                 case "pdf":
                     image.BeginInit();
                     image.UriSource = new Uri("pack://application:,,,/Static/pdf.png");
+                    image.EndInit();
+                    break;
+                case "jpg":
+                case "png":
+                    image.BeginInit();
+                    image.UriSource = new Uri("pack://application:,,,/Static/pdf.png");
+                    image.EndInit();
+                    break;
+                case "docx":
+                    image.BeginInit();
+                    image.UriSource = new Uri("pack://application:,,,/Static/docx.png");
                     image.EndInit();
                     break;
                 default:
@@ -36,7 +48,6 @@ namespace TelegramPrinterWPF
                     image.EndInit();
                     break;
             }
-
             Thumbnail.Source = image;
         }
 

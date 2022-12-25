@@ -18,7 +18,7 @@ public class DocumentPrinter
     {
         _MainWindow = mainWindow;
     }
-    public bool printWithSpire(DocFile file, bool? duplexMode = false, short NoOfCopies = 1)
+    public bool printWithSpire(DocFile file, Duplex mode = Duplex.Simplex, short NoOfCopies = 1)
     {
         try
         {
@@ -27,10 +27,7 @@ public class DocumentPrinter
             //pdfdocument.PrintSettings.PrinterName = "OneNote for Windows 10";
             pdfdocument.PrintSettings.Copies = NoOfCopies;
 
-            if (duplexMode == true && pdfdocument.PrintSettings.CanDuplex)
-            {
-                pdfdocument.PrintSettings.Duplex = Duplex.Vertical;
-            }
+            pdfdocument.PrintSettings.Duplex = mode;
             _MainWindow.Telegram_Logs.Items.Dispatcher.Invoke(() =>
             {
                 _MainWindow.Telegram_Logs.Items.Add($"Printing File: {file.Name} with Printer: {pdfdocument.PrintSettings.PrinterName}");
@@ -67,13 +64,6 @@ public class DocumentPrinter
 
             if (dialogPrint.ShowDialog() == DialogResult.OK)
             {
-                ////Set the pagenumber which you choose as the start page to print
-                //doc.s = dialogPrint.PrinterSettings.FromPage;
-                ////Set the pagenumber which you choose as the final page to print
-                //doc.PrintToPage = dialogPrint.PrinterSettings.ToPage;
-                ////Set the name of the printer which is to print the PDF
-                //doc.PrinterName = dialogPrint.PrinterSettings.PrinterName;
-
                 doc.Print();
             }
             return true;
@@ -149,4 +139,8 @@ public class DocumentPrinter
         }
     }
 
+    internal bool printDocx(DocFile downloadFile, bool? isChecked, short noofCopies)
+    {
+        throw new NotImplementedException();
+    }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Configuration;
 using System.Diagnostics;
+using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
@@ -169,11 +170,15 @@ namespace TelegramPrinterWPF.Source
                     switch (downloadFile.Type)
                     {
                         case "pdf":
-                            printResult = _documentPrinter.printWithSpire(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
+                            var mode = (bool)printWindow.DuplexPrint.IsChecked ? Duplex.Vertical : Duplex.Simplex;
+                            printResult = _documentPrinter.printWithSpireWithDailog(downloadFile, mode, NoofCopies);
                             break;
                         case "jpj":
                         case "png":
                             printResult = _documentPrinter.printImage2(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
+                            break;
+                        case "docx":
+                            printResult = _documentPrinter.printDocx(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
                             break;
                     }
                 }
