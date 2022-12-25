@@ -21,7 +21,6 @@ namespace TelegramPrinterWPF
     public partial class MainWindow
     {
         CancellationTokenSource cts;
-        NotifyIcon notifyIcon;
         public MainWindow()
         {
             cts = new(); 

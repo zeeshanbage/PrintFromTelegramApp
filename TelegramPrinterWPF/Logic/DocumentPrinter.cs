@@ -92,7 +92,7 @@ public class DocumentPrinter
         try
         {
             // Create a PrintDialog object
-            PrintDialog printDialog = new PrintDialog();
+            System.Windows.Controls.PrintDialog printDialog = new System.Windows.Controls.PrintDialog();
 
             // Set the image to print
             Image image = new Image();
@@ -111,7 +111,7 @@ public class DocumentPrinter
         catch(Exception ex)
         {
             Debug.WriteLine(ex);
-            MessageBox.Show("Error", ex.Message);
+            System.Windows.Forms.MessageBox.Show("Error", ex.Message);
             return false;
         }
     }

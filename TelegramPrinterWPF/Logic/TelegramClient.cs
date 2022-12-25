@@ -11,6 +11,7 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
+using Telegram.Bot.Types.ReplyMarkups;
 using TelegramPrinterWPF.Models;
 using Message = Telegram.Bot.Types.Message;
 
@@ -27,24 +28,7 @@ namespace TelegramPrinterWPF.Source
             MainWindow = mainWindow;
             BotClient = new TelegramBotClient(ConfigurationManager.AppSettings["TelegramBotToken"]);
         }
-        public async Task TelegramBotClientAsync(CancellationToken stoppingToken)
-        {
-            CancellationTokenSource cts = new();
-
-            ReceiverOptions receiverOptions = new()
-            {
-                AllowedUpdates = Array.Empty<UpdateType>() // receive all update types
-            };
-
-            BotClient.StartReceiving(
-                updateHandler: HandleUpdateAsync,
-                pollingErrorHandler: HandlePollingErrorAsync,
-                receiverOptions: receiverOptions,
-                cancellationToken: stoppingToken
-            );
-
-
-        }
+  
 
         public static void StopTelegramBot(CancellationTokenSource cts)
         {
@@ -55,44 +39,20 @@ namespace TelegramPrinterWPF.Source
             if (update.Message is not { } message)
                 return;
 
-            if (message.Document is not null || message.Photo is not null)
+            if (message.Type == MessageType.Document || message.Type== MessageType.Photo)
             {
-                bool printresult;
-                bool? takePrint = false;
 
                 var downloadFile = new DocFile(await DownloadFile(message, botClient));
 
-                _documentPrinter = new DocumentPrinter(MainWindow);
-                var userName = message.Chat.FirstName + " " + message.Chat.LastName;
+
 
                 //Showing Notification 
 
 
                 //showing Print Window
-                PrintWindow printWindow;
-                Application.Current.Dispatcher.Invoke((Action)delegate
-                {
-                    printWindow = new PrintWindow(downloadFile, userName);
-                    takePrint = printWindow.ShowDialog();
-                    if (takePrint == true)
-                    {
-                        var NoofCopies = printWindow.NoOfCopies.Text != string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
-                        switch (downloadFile.Type)
-                        {
-                            case "pdf":
-                                printresult = _documentPrinter.printWithSpire(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
-                                break;
-                            case "jpj":
-                            case "png":
-                                printresult = _documentPrinter.printImage(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
-                                break;
-
-
-                        }
-                    }
-                    Debug.WriteLine("Returned to the Main window");
-                });
-
+                _documentPrinter = new DocumentPrinter(MainWindow);
+                var userName = message.Chat.FirstName + " " + message.Chat.LastName;
+                var printresult = PrintDocument(downloadFile, userName);
 
             }
             // Echo if received message text
@@ -100,6 +60,34 @@ namespace TelegramPrinterWPF.Source
             {
                 await SendMessage(message, botClient, cancellationToken);
             }
+        }
+
+        private bool? PrintDocument(DocFile downloadFile, string userName)
+        {
+            bool? takePrint = false;
+            PrintWindow printWindow;
+            bool printResult = false;
+            Application.Current.Dispatcher.Invoke((Action)delegate
+            {
+                printWindow = new PrintWindow(downloadFile, userName);
+                takePrint = printWindow.ShowDialog();
+                if (takePrint == true)
+                {
+                    var NoofCopies = printWindow.NoOfCopies.Text != string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
+                    switch (downloadFile.Type)
+                    {
+                        case "pdf":
+                            printResult= _documentPrinter.printWithSpire(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
+                            break;
+                        case "jpj":
+                        case "png":
+                            printResult= _documentPrinter.printImage(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
+                            break;
+                    }
+                }
+                Debug.WriteLine("Returned to the Main window");
+            });
+            return printResult;
         }
 
         public Task HandlePollingErrorAsync(ITelegramBotClient botClient, Exception exception, CancellationToken cancellationToken)
@@ -126,11 +114,17 @@ namespace TelegramPrinterWPF.Source
                 $"Received a '{message.Text}' message in chat {message.Chat.Id} from {message.Chat.Username}.");
             MainWindow.Dispatcher.Invoke(() =>
             {
-                MainWindow.Telegram_Logs.Items.Add($"Received a '{message.Text}' message from {message.Chat.Username}.");
+                MainWindow.Telegram_Logs.Items.Add($"Received a '{message.Text}' message from {message.Chat.FirstName}.");
             });
+
+
+            var messageText = $"*Hello, {message.Chat.FirstName}*" +
+                                $"\n*I am {botClient.GetMeAsync().Result.FirstName}*" +
+                                $"\nSend me PDF or Image to Take Print.\n\n";
+
             Message sentMessage = await botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
-                text: $"Thank you '{message.Chat.FirstName}' for messaging your message is {message.Text}.",
+                text: messageText, parseMode: ParseMode.Markdown,
                 cancellationToken: cancellationToken);
         }
 
