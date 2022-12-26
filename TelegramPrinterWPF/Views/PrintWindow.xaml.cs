@@ -72,11 +72,22 @@ namespace TelegramPrinterWPF
             Close();
         }
 
-        private void OpenFile_Click(object sender, RoutedEventArgs e)
+        private void OpenFolder_Click(object sender, RoutedEventArgs e)
         {
             var root = ConfigurationManager.AppSettings["DownloadFolder"];
             System.Diagnostics.Process.Start(Environment.GetEnvironmentVariable("WINDIR") + @"\explorer.exe", root);
 
+        }
+
+        private void OpenFile_Click(object sender, RoutedEventArgs e)
+        {
+            var p = new Process();
+            p.StartInfo = new ProcessStartInfo(DocFile.Path)
+            {
+                UseShellExecute = true
+            };
+            p.Start();
+            Close();
         }
     }
 }

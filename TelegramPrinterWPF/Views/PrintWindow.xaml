@@ -25,7 +25,8 @@
         <Image x:Name="Thumbnail" HorizontalAlignment="Left" Height="44" Margin="14,25,0,0" VerticalAlignment="Top" Width="41"/>
         <Label x:Name="FileName" Content="FileName :" HorizontalAlignment="Left" Margin="70,19,0,0" VerticalAlignment="Top" Width="393" BorderBrush="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Background="{x:Null}" Height="26"/>
         <Label x:Name="UserName" Content="User :" HorizontalAlignment="Left" Margin="70,50,0,0" VerticalAlignment="Top" Width="409" Height="26"/>
-        <Button x:Name="OpenFile" Content="Open Folder" HorizontalAlignment="Left" Margin="97,53,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.312,-0.066" Height="24" Width="80" Foreground="White" Click="OpenFile_Click" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Grid.Row="1"/>
+        <Button x:Name="OpenFolder" Content="Open Folder" HorizontalAlignment="Left" Margin="301,9,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.312,-0.066" Height="24" Width="80" Foreground="White" Click="OpenFolder_Click" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Grid.Row="1"/>
+        <Button x:Name="OpenFile" Content="Open File" HorizontalAlignment="Left" Margin="96,53,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.312,-0.066" Height="24" Width="80" Foreground="White" Click="OpenFile_Click" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Grid.Row="1"/>
         <!--<Button x:Name="PrintDailog" Content="Open Printer" HorizontalAlignment="Left" Margin="15,89,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.312,-0.066" Height="24" Width="80" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}" Foreground="White" Click="PrintDailog_Click" Grid.Column="1" Grid.ColumnSpan="2"/>-->
 
     </Grid>

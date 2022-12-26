@@ -149,6 +149,7 @@ public class DocumentPrinter
             PrintDialog dialogPrint = new PrintDialog();
             if (dialogPrint.ShowDialog() == DialogResult.OK)
             {
+                printDoc.PrinterSettings= dialogPrint.PrinterSettings;
                 printDoc.Print();
             }
         }
