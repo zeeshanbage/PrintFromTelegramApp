@@ -119,14 +119,13 @@ namespace TelegramPrinterWPF.Source
                 filename = message.Document.FileName;
 
             }
-            var filepath = ConfigurationManager.AppSettings["DownloadFolder"] + @"\" +message.From?.Username + "_" + filename;
-
+            var DownloadFolder = ConfigurationManager.AppSettings["DownloadFolder"];
+            var filepath= Path.Combine(DownloadFolder, message.From?.Username + "_" + filename);
             var fs = new FileStream(filepath, FileMode.Create);
             if (file.FilePath != null) await botClient.DownloadFileAsync(file.FilePath, fs);
             Debug.WriteLine($"file downloaded {filename} path {filepath}");
             MainWindow.Dispatcher?.Invoke(() =>
-            MainWindow.Telegram_Logs.Items.Add($"file downloaded {filename} path {filepath}")
-            );
+            MainWindow.Telegram_Logs.Items.Add($"file downloaded {filename} path {filepath}"));
             fs.Close();
             await fs.DisposeAsync();
             return filepath;

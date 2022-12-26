@@ -7,7 +7,9 @@ using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using System.Windows.Forms;
 using TelegramPrinterWPF.Models;
+using DocumentFormat.OpenXml.Wordprocessing;
 using PrintDialog = System.Windows.Forms.PrintDialog;
+using DocumentFormat.OpenXml.Packaging;
 
 namespace TelegramPrinterWPF.Source;
 public class DocumentPrinter
@@ -89,7 +91,7 @@ public class DocumentPrinter
             image.Source = new BitmapImage(new Uri(downloadFile.Path, UriKind.Absolute));
 
             // Set the page size and margins
-            Size pageSize = new Size(printDialog.PrintableAreaWidth, printDialog.PrintableAreaHeight);          
+            System.Windows.Size pageSize = new System.Windows.Size(printDialog.PrintableAreaWidth, printDialog.PrintableAreaHeight);          
             image.Measure(pageSize);
             image.Arrange(new Rect(5, 5, pageSize.Width, pageSize.Height));
             // Print the image
@@ -117,7 +119,7 @@ public class DocumentPrinter
             image.Source = new BitmapImage(new Uri(file.Path, UriKind.Absolute));
 
             // Set the page size and margins
-            Size pageSize = new Size(imagePrintDialog.PrintableAreaWidth, imagePrintDialog.PrintableAreaHeight);
+            System.Windows.Size pageSize = new System.Windows.Size(imagePrintDialog.PrintableAreaWidth, imagePrintDialog.PrintableAreaHeight);
             image.Measure(pageSize);
             image.Arrange(new Rect(5, 5, pageSize.Width, pageSize.Height));
 
@@ -141,6 +143,15 @@ public class DocumentPrinter
 
     internal bool printDocx(DocFile downloadFile, bool? isChecked, short noofCopies)
     {
-        throw new NotImplementedException();
+        using (WordprocessingDocument doc = WordprocessingDocument.Open(downloadFile.Path, true))
+        {
+            PrintDocument printDoc = new PrintDocument();
+            PrintDialog dialogPrint = new PrintDialog();
+            if (dialogPrint.ShowDialog() == DialogResult.OK)
+            {
+                printDoc.Print();
+            }
+        }
+        return true;
     }
 }
