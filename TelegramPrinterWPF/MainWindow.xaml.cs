@@ -2,8 +2,10 @@
 using System.Configuration;
 using System.Diagnostics;
 using System.Drawing.Printing;
+using System.Linq;
 using System.Threading;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Forms;
 using System.Windows.Media;
 using Telegram.Bot;
@@ -20,6 +22,7 @@ namespace TelegramPrinterWPF
     /// </summary>
     public partial class MainWindow
     {
+        private const string FileDownloaded = "file downloaded ";
         CancellationTokenSource cts;
         public MainWindow()
         {
@@ -102,6 +105,20 @@ namespace TelegramPrinterWPF
         {
             Startup startup = new Startup();
             startup.ShowDialog();
+        }
+
+        private void Telegram_Logs_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (Telegram_Logs.SelectedItem != null && Telegram_Logs.SelectedItem.ToString().StartsWith(FileDownloaded))
+            {
+                var item = Telegram_Logs.SelectedItem.ToString().Split(' ');
+                var p = new Process();
+                p.StartInfo = new ProcessStartInfo(item[5])
+                {
+                    UseShellExecute = true
+                };
+                p.Start();
+            }
         }
     }
 }

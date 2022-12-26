@@ -24,6 +24,7 @@ namespace TelegramPrinterWPF.Source
         public readonly TelegramBotClient BotClient;
         private DocumentPrinter _documentPrinter;
         private MainWindow MainWindow;
+        private const string FileDownloaded = "file downloaded ";
 
         public TelegramClient(MainWindow mainWindow)
         {
@@ -123,36 +124,14 @@ namespace TelegramPrinterWPF.Source
             var filepath= Path.Combine(DownloadFolder, message.From?.Username + "_" + filename);
             var fs = new FileStream(filepath, FileMode.Create);
             if (file.FilePath != null) await botClient.DownloadFileAsync(file.FilePath, fs);
-            Debug.WriteLine($"file downloaded {filename} path {filepath}");
+            Debug.WriteLine($"{FileDownloaded} {filename} filepath {filepath}");
             MainWindow.Dispatcher?.Invoke(() =>
-            MainWindow.Telegram_Logs.Items.Add($"file downloaded {filename} path {filepath}"));
+            MainWindow.Telegram_Logs.Items.Add($"{FileDownloaded} {filename} path {filepath}"));
             fs.Close();
             await fs.DisposeAsync();
             return filepath;
         }
 
-        public async Task startBotAsync(CancellationTokenSource cts)
-        {
-            Debug.WriteLine($"Start listening for ");
-            MainWindow.Telegram_Logs.Items.Add($"Telegram Bot is Online");
-
-            ReceiverOptions receiverOptions = new()
-            {
-                AllowedUpdates = Array.Empty<UpdateType>() // receive all update types
-            };
-            var me = await BotClient.GetMeAsync();
-            Debug.WriteLine($"Bot is online. Start listening for @{me.Username}");
-            MainWindow.Telegram_Logs.Items.Add($"Telegram Bot is online. Started listening for @{me.Username}");
-            BotClient.StartReceiving(
-                updateHandler: HandleUpdateAsync,
-                pollingErrorHandler: HandlePollingErrorAsync,
-                receiverOptions: receiverOptions,
-                cancellationToken: cts.Token
-                );
-
-
-
-        }
 
         private bool? PrintDocument(DocFile downloadFile, string userName)
         {
