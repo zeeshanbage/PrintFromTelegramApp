@@ -66,22 +66,31 @@ namespace TelegramPrinterWPF
         private void TestPrintButton_Click(object sender, RoutedEventArgs e)
         {
             var TestPrinter = new DocumentPrinter(this);
-            bool printed = false;
-            var downloadFolder = ConfigurationManager.AppSettings["DownloadFolder"];
-            var file = new DocFile(downloadFolder+"/doc.pdf");
-            var user = "Zeeshan";
-            PrintWindow printWindow = new PrintWindow(file, user);
-            printWindow.Owner = Application.Current.Windows[0];
+            bool? printed;
+            // Create OpenFileDialog
+            Microsoft.Win32.OpenFileDialog openFileDlg = new Microsoft.Win32.OpenFileDialog();
 
+            // Launch OpenFileDialog by calling ShowDialog method
+            Nullable<bool> result = openFileDlg.ShowDialog();
 
-            var x = printWindow.ShowDialog();
-            if (x == true)
+            if (result == true)
             {
-                var NoofCopies = printWindow.NoOfCopies.Text != string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
-                var mode =(bool) printWindow.DuplexPrint.IsChecked ? Duplex.Vertical : Duplex.Simplex;
-                printed = TestPrinter.printWithSpireWithDailog(file,mode , NoofCopies);
+                var file = new DocFile(openFileDlg.FileName);
+                var user = "Zeeshan";
+                PrintWindow printWindow = new PrintWindow(file, user);
+                printWindow.Owner = Application.Current.Windows[0];
+
+
+                var x = printWindow.ShowDialog();
+                if (x == true)
+                {
+                    var NoofCopies = printWindow.NoOfCopies.Text != string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
+                    var mode = (bool)printWindow.DuplexPrint.IsChecked ? Duplex.Vertical : Duplex.Simplex;
+                    printed = TestPrinter.printWithSpireWithDailog(file, mode, NoofCopies);
+                }
             }
-            Debug.WriteLine("passed to the window");
+            
+            Debug.WriteLine("Control passed to the main window");
 
         }
         
