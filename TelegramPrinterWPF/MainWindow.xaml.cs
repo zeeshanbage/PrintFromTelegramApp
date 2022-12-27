@@ -14,6 +14,8 @@ using Telegram.Bot.Types.Enums;
 using TelegramPrinterWPF.Models;
 using TelegramPrinterWPF.Source;
 using TelegramPrinterWPF.Windows;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using Application = System.Windows.Application;
 
 namespace TelegramPrinterWPF
 {
@@ -69,6 +71,7 @@ namespace TelegramPrinterWPF
             var file = new DocFile(downloadFolder+"/doc.pdf");
             var user = "Zeeshan";
             PrintWindow printWindow = new PrintWindow(file, user);
+            printWindow.Owner = Application.Current.Windows[0];
 
 
             var x = printWindow.ShowDialog();
