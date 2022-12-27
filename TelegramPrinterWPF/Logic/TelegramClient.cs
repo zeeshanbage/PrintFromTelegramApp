@@ -57,13 +57,22 @@ namespace TelegramPrinterWPF.Source
                 _documentPrinter = new DocumentPrinter(MainWindow);
                 var userName = message.Chat.FirstName + " " + message.Chat.LastName;
                 var printresult = PrintDocument(downloadFile, userName);
-
+                if(printresult==true)
+                {
+                    var messageText = $"* Thank you {message.Chat.FirstName} {message.Chat.LastName}*" +
+                                $"\n*Keep Using {botClient.GetMeAsync().Result.FirstName} For Taking Print*";
+                    await SendMessage(message, messageText, botClient, cancellationToken);
+                }
 
             }
             // Echo if received message text
             if (message.Text is not null)
             {
-                await SendMessage(message, botClient, cancellationToken);
+                var messageText = $"*Hello, {message.Chat.FirstName} {message.Chat.LastName}*" +
+                                $"\n*I am {botClient.GetMeAsync().Result.FirstName}*" +
+                                $"\nSend me PDF,SDocx or Image to Take Print.\n\n";
+
+                await SendMessage(message,messageText, botClient, cancellationToken);
             }
         }
 
@@ -84,7 +93,7 @@ namespace TelegramPrinterWPF.Source
             });
             return Task.CompletedTask;
         }
-        private async Task SendMessage(Message message, ITelegramBotClient botClient,
+        private async Task SendMessage(Message message,string messageText, ITelegramBotClient botClient,
             CancellationToken cancellationToken)
         {
             Debug.WriteLine(
@@ -94,10 +103,6 @@ namespace TelegramPrinterWPF.Source
                 MainWindow.Telegram_Logs.Items.Add($"Received a '{message.Text}' message from {message.Chat.FirstName}.");
             });
 
-
-            var messageText = $"*Hello, {message.Chat.FirstName}*" +
-                                $"\n*I am {botClient.GetMeAsync().Result.FirstName}*" +
-                                $"\nSend me PDF or Image to Take Print.\n\n";
 
             Message sentMessage = await botClient.SendTextMessageAsync(
                 chatId: message.Chat.Id,
