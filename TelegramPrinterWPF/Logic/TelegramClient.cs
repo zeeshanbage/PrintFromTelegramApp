@@ -5,6 +5,7 @@ using System.Drawing.Printing;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -109,7 +110,7 @@ namespace TelegramPrinterWPF.Source
             Debug.WriteLine(JsonSerializer.Serialize(message.Document));
             Telegram.Bot.Types.File file;
             string filename;
-            if(message.Type == MessageType.Photo)
+            if (message.Type == MessageType.Photo)
             {
                 file = await botClient.GetFileAsync(message.Photo[message.Photo.Length - 1].FileId);
                 filename = file.FilePath.Split('/').Last();
@@ -120,13 +121,15 @@ namespace TelegramPrinterWPF.Source
                 filename = message.Document.FileName;
 
             }
+            string pattern = @"\s+";
+            string filenameTrim = Regex.Replace(filename, pattern, "");
             var DownloadFolder = ConfigurationManager.AppSettings["DownloadFolder"];
-            var filepath= Path.Combine(DownloadFolder, message.From?.Username + "_" + filename);
+            var filepath = Path.Combine(DownloadFolder, message.From?.Username + "_" + filenameTrim);
             var fs = new FileStream(filepath, FileMode.Create);
             if (file.FilePath != null) await botClient.DownloadFileAsync(file.FilePath, fs);
-            Debug.WriteLine($"{FileDownloaded} {filename} filepath {filepath}");
+            Debug.WriteLine($"{FileDownloaded} {filenameTrim} filepath {filepath}");
             MainWindow.Dispatcher?.Invoke(() =>
-            MainWindow.Telegram_Logs.Items.Add($"{FileDownloaded} {filename} path {filepath}"));
+            MainWindow.Telegram_Logs.Items.Add($"{FileDownloaded} {filenameTrim} path {filepath}"));
             fs.Close();
             await fs.DisposeAsync();
             return filepath;
@@ -152,6 +155,7 @@ namespace TelegramPrinterWPF.Source
                             printResult = _documentPrinter.printWithSpireWithDailog(downloadFile, mode, NoofCopies);
                             break;
                         case "jpj":
+                        case "jpeg":
                         case "png":
                             printResult = _documentPrinter.printImage2(downloadFile, printWindow.DuplexPrint.IsChecked, NoofCopies);
                             break;

@@ -32,9 +32,10 @@ namespace TelegramPrinterWPF
                     image.EndInit();
                     break;
                 case "jpg":
+                case "jpeg":
                 case "png":
                     image.BeginInit();
-                    image.UriSource = new Uri("pack://application:,,,/Static/pdf.png");
+                    image.UriSource = new Uri("pack://application:,,,/Static/jpg.png");
                     image.EndInit();
                     break;
                 case "docx":
@@ -49,6 +50,10 @@ namespace TelegramPrinterWPF
                     break;
             }
             Thumbnail.Source = image;
+            if(DocFile.Type=="docx" || DocFile.Type== "jpeg" || DocFile.Type=="png")
+            {
+                Print.Visibility= Visibility.Hidden;   
+            }
         }
 
 
