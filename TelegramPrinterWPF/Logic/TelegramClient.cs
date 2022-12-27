@@ -60,7 +60,7 @@ namespace TelegramPrinterWPF.Source
                 if(printresult==true)
                 {
                     var messageText = $"* Thank you {message.Chat.FirstName} {message.Chat.LastName}*" +
-                                $"\n*Keep Using {botClient.GetMeAsync().Result.FirstName} For Taking Print*";
+                                $"\n*Your Printing is Done. Keep Using {botClient.GetMeAsync().Result.FirstName} For Taking Prints*";
                     await SendMessage(message, messageText, botClient, cancellationToken);
                 }
 
