@@ -141,7 +141,7 @@ namespace TelegramPrinterWPF.Source
         }
 
 
-        private bool? PrintDocument(DocFile downloadFile, string userName)
+        public bool? PrintDocument(DocFile downloadFile, string userName)
         {
             bool? takePrint = false;
             PrintWindow printWindow;

@@ -26,6 +26,8 @@ namespace TelegramPrinterWPF
     {
         private const string FileDownloaded = "file downloaded ";
         CancellationTokenSource cts;
+        private TelegramClient telegramHelper;
+
         public MainWindow()
         {
             cts = new(); 
@@ -43,7 +45,7 @@ namespace TelegramPrinterWPF
 
         private void MyWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            var telegramHelper = new TelegramClient(this);
+            telegramHelper = new TelegramClient(this);
             Debug.WriteLine($"Start listening for ");
             var me = telegramHelper.BotClient.GetMeAsync();
             Telegram_Logs.Items.Add($"Telegram Bot is Online ID:{me.Result.Id} Name: {me.Result.FirstName} ");
@@ -65,6 +67,7 @@ namespace TelegramPrinterWPF
 
         private void TestPrintButton_Click(object sender, RoutedEventArgs e)
         {
+            
             var TestPrinter = new DocumentPrinter(this);
             bool? printed;
             // Create OpenFileDialog
@@ -75,19 +78,7 @@ namespace TelegramPrinterWPF
 
             if (result == true)
             {
-                var file = new DocFile(openFileDlg.FileName);
-                var user = "Zeeshan";
-                PrintWindow printWindow = new PrintWindow(file, user);
-                printWindow.Owner = Application.Current.Windows[0];
-
-
-                var x = printWindow.ShowDialog();
-                if (x == true)
-                {
-                    var NoofCopies = printWindow.NoOfCopies.Text != string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
-                    var mode = (bool)printWindow.DuplexPrint.IsChecked ? Duplex.Vertical : Duplex.Simplex;
-                    printed = TestPrinter.printWithSpireWithDailog(file, mode, NoofCopies);
-                }
+                telegramHelper.PrintDocument(new DocFile(openFileDlg.FileName), "zeeshan");
             }
             
             Debug.WriteLine("Control passed to the main window");
