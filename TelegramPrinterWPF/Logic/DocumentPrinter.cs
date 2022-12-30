@@ -79,7 +79,7 @@ public class DocumentPrinter
         }
     }
 
-    public bool printImage(DocFile downloadFile, bool? isChecked, short noofCopies)
+    public bool printImage(DocFile downloadFile, bool? isChecked=false, short noofCopies=1)
     {
         try
         {

@@ -16,6 +16,7 @@ using TelegramPrinterWPF.Source;
 using TelegramPrinterWPF.Windows;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 using Application = System.Windows.Application;
+using Button = System.Windows.Controls.Button;
 
 namespace TelegramPrinterWPF
 {
@@ -26,8 +27,7 @@ namespace TelegramPrinterWPF
     {
         private const string FileDownloaded = "file downloaded ";
         CancellationTokenSource cts;
-        private TelegramClient telegramHelper;
-
+        DocumentPrinter documentPrinter;
         public MainWindow()
         {
             cts = new(); 
@@ -37,7 +37,7 @@ namespace TelegramPrinterWPF
                 SetupAppForFirstUse();
             }
             InitializeComponent();
-
+            documentPrinter = new DocumentPrinter(this);
             Loaded += MyWindow_Loaded;
             
         }
@@ -45,7 +45,7 @@ namespace TelegramPrinterWPF
 
         private void MyWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            telegramHelper = new TelegramClient(this);
+            var telegramHelper = new TelegramClient(this);
             Debug.WriteLine($"Start listening for ");
             var me = telegramHelper.BotClient.GetMeAsync();
             Telegram_Logs.Items.Add($"Telegram Bot is Online ID:{me.Result.Id} Name: {me.Result.FirstName} ");
@@ -56,7 +56,7 @@ namespace TelegramPrinterWPF
             };
 
             telegramHelper.BotClient.StartReceiving(
-                updateHandler: telegramHelper.HandleUpdateAsync,
+                updateHandler: telegramHelper.GetMessagesAsync,
                 pollingErrorHandler: telegramHelper.HandlePollingErrorAsync,
                 receiverOptions: receiverOptions,
                 cancellationToken: cts.Token
@@ -78,7 +78,18 @@ namespace TelegramPrinterWPF
 
             if (result == true)
             {
-                telegramHelper.PrintDocument(new DocFile(openFileDlg.FileName), "zeeshan");
+                var file = new DocFile(openFileDlg.FileName,"Zeeshan");
+                PrintWindow printWindow = new PrintWindow(file);
+                printWindow.Owner = Application.Current.Windows[0];
+
+
+                var x = printWindow.ShowDialog();
+                if (x == true)
+                {
+                    var NoofCopies = printWindow.NoOfCopies.Text != string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
+                    var mode = (bool)printWindow.DuplexPrint.IsChecked ? Duplex.Vertical : Duplex.Simplex;
+                    printed = TestPrinter.printWithSpireWithDailog(file, mode, NoofCopies);
+                }
             }
             
             Debug.WriteLine("Control passed to the main window");

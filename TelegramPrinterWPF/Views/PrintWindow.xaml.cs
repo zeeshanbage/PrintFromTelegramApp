@@ -17,12 +17,12 @@ namespace TelegramPrinterWPF
     public partial class PrintWindow : Window
     {
         DocFile DocFile;
-        public PrintWindow(DocFile file, string user)
+        public PrintWindow(DocFile file)
         {
             DocFile = file;
             InitializeComponent();
             FileName.Content = "File : " + DocFile.Name;
-            UserName.Content = "User : " + user;
+            UserName.Content = "User : " + DocFile.FromUser;
             BitmapImage image = new BitmapImage();
 
             switch (DocFile.Type)
