@@ -14,6 +14,7 @@ using Telegram.Bot.Exceptions;
 using Telegram.Bot.Types;
 using Telegram.Bot.Types.Enums;
 using Telegram.Bot.Types.ReplyMarkups;
+using TelegramPrinterWPF.Logic;
 using TelegramPrinterWPF.Models;
 using Message = Telegram.Bot.Types.Message;
 
@@ -24,7 +25,6 @@ namespace TelegramPrinterWPF.Source
         public readonly TelegramBotClient BotClient;
         private DocumentPrinter _documentPrinter;
         private MainWindow MainWindow;
-        private List<DocFile> DownloadedFiles= new List<DocFile>();
         private Queue<DocFile> FileForProccess= new Queue<DocFile>();
         public TelegramClient(MainWindow mainWindow)
         {
@@ -87,7 +87,11 @@ namespace TelegramPrinterWPF.Source
             {
 
                 var downloadFile = await DownloadFile(message, botClient);
-                DownloadedFiles.Add(downloadFile);
+                App.Current.Dispatcher.Invoke((System.Action)delegate
+                {
+                    MainWindow.DownloadedFiles.Add(downloadFile);
+                });
+                LocalStorage.WriteToJsonFile("DownloadedFiles.json", downloadFile);
                 FileForProccess.Enqueue(downloadFile);
                 if (AppConstants.ReadyToPrint)
                 {

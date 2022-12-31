@@ -4,7 +4,10 @@ namespace TelegramPrinterWPF.Models
 {
     public class DocFile
     {
+        public DocFile()
+        {
 
+        }
         public DocFile(string path)
         {
             Path = path;

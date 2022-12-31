@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Configuration;
 using System.Diagnostics;
 using System.Drawing.Printing;
@@ -26,6 +28,7 @@ namespace TelegramPrinterWPF
     public partial class MainWindow
     {
         private const string FileDownloaded = "file downloaded ";
+        public ObservableCollection<DocFile> DownloadedFiles = new ObservableCollection<DocFile>();
         CancellationTokenSource cts;
         DocumentPrinter documentPrinter;
         public MainWindow()
@@ -39,7 +42,7 @@ namespace TelegramPrinterWPF
             InitializeComponent();
             documentPrinter = new DocumentPrinter(this);
             Loaded += MyWindow_Loaded;
-            
+            ItemList.ItemsSource = DownloadedFiles;
         }
 
 
@@ -118,6 +121,42 @@ namespace TelegramPrinterWPF
                 var item = Telegram_Logs.SelectedItem.ToString().Split(' ');
                 var p = new Process();
                 p.StartInfo = new ProcessStartInfo(item[5])
+                {
+                    UseShellExecute = true
+                };
+                p.Start();
+            }
+        }
+
+        private void ItemList_Print(object sender, RoutedEventArgs e)
+        {
+         
+        }
+
+        private void MenuItemPrint_Click(object sender, RoutedEventArgs e)
+        {
+            if (ItemList.SelectedIndex == -1)
+            {
+                return;
+            }
+            var filePath = ItemList.SelectedItem as DocFile;
+            if(filePath != null)
+            {
+                documentPrinter.print(filePath);
+            }
+        }
+
+        private void MenuItemOpen_Click(object sender, RoutedEventArgs e)
+        {
+            if (ItemList.SelectedIndex == -1)
+            {
+                return;
+            }
+            var file = ItemList.SelectedItem as DocFile;
+            if(file != null)
+            {
+                var p = new Process();
+                p.StartInfo = new ProcessStartInfo(file.Path)
                 {
                     UseShellExecute = true
                 };

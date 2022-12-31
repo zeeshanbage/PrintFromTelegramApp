@@ -67,14 +67,12 @@ namespace TelegramPrinterWPF
         private void Print_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = true;
-            Hide();
             Close();
         }
 
         private void Cancel_Click(object sender, RoutedEventArgs e)
         {
             DialogResult = false;
-            Hide();
             Close();
         }
 

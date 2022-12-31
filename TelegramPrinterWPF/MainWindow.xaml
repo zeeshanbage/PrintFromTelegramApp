@@ -8,11 +8,27 @@
         Title="PrintFromTelegram" Height="442" Width="689" WindowStartupLocation="CenterScreen">
 
     <Grid>
-        <ListBox x:Name="Telegram_Logs" x:FieldModifier="public" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,78,10,9" Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}" MouseDoubleClick="Telegram_Logs_MouseDoubleClick"/>
+        <ListBox x:Name="Telegram_Logs" x:FieldModifier="public" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,78,371,9" Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}" MouseDoubleClick="Telegram_Logs_MouseDoubleClick"/>
         <Button x:Name="TestPrintButton" Content="TestPrint" HorizontalAlignment="Right" Margin="0,37,10,0" VerticalAlignment="Top" Click="TestPrintButton_Click" Height="32" Width="77" RenderTransformOrigin="-0.953,-0.123" Foreground="White" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
         <ToggleButton  x:Name="ToggleBot" Content="Stop Bot" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" 
                 Checked = "HandleCheck" Unchecked = "HandleUnchecked"
                 Height="32" Width="76" Foreground="White" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
+        <ListBox x:Name="ItemList" Margin="344,78,10,10" >
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Name}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Print" Click="MenuItemPrint_Click"/>
+                    <MenuItem Header="Open" Click="MenuItemOpen_Click"/>
+
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>
 
     </Grid>
 
