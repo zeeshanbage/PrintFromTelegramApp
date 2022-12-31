@@ -79,17 +79,7 @@ namespace TelegramPrinterWPF
             if (result == true)
             {
                 var file = new DocFile(openFileDlg.FileName,"Zeeshan");
-                PrintWindow printWindow = new PrintWindow(file);
-                printWindow.Owner = Application.Current.Windows[0];
-
-
-                var x = printWindow.ShowDialog();
-                if (x == true)
-                {
-                    var NoofCopies = printWindow.NoOfCopies.Text != string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
-                    var mode = (bool)printWindow.DuplexPrint.IsChecked ? Duplex.Vertical : Duplex.Simplex;
-                    printed = TestPrinter.printWithSpireWithDailog(file, mode, NoofCopies);
-                }
+                printed = TestPrinter.print(file);
             }
             
             Debug.WriteLine("Control passed to the main window");

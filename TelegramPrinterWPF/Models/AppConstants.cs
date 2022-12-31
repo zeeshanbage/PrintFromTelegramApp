@@ -9,5 +9,7 @@ namespace TelegramPrinterWPF.Models
     static class AppConstants
     {
         public static bool ReadyToPrint = true;
+        public const string FileDownloaded = "file downloaded ";
+
     }
 }

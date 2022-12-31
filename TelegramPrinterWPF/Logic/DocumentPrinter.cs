@@ -20,6 +20,40 @@ public class DocumentPrinter
     {
         _MainWindow = mainWindow;
     }
+
+    public bool print(DocFile file)
+    {
+
+        bool? takePrint = false;
+        PrintWindow printWindow;
+        bool printResult = false;
+        System.Windows.Application.Current.Dispatcher.Invoke((Action)delegate
+        {
+            printWindow = new PrintWindow(file);
+            printWindow.Owner = _MainWindow;
+            takePrint = printWindow.ShowDialog();
+            if (takePrint == true)
+            {
+                var NoofCopies = printWindow.NoOfCopies.Text != string.Empty ? short.Parse(printWindow.NoOfCopies.Text) : (short)1;
+                switch (file.Type)
+                {
+                    case "pdf":
+                        Duplex mode = (bool)printWindow.DuplexPrint.IsChecked ? Duplex.Vertical : Duplex.Simplex;
+                        printResult = printWithSpireWithDailog(file, mode, NoofCopies);
+                        break;
+                    case "jpj":
+                    case "jpeg":
+                    case "png":
+                        printResult = printImage2(file);
+                        break;
+                    case "docx":
+                        printResult = printDocx(file, printWindow.DuplexPrint.IsChecked, NoofCopies);
+                        break;
+                }
+            }
+        });
+        return printResult;
+    }
     public bool printWithSpire(DocFile file, Duplex mode = Duplex.Simplex, short NoOfCopies = 1)
     {
         try
@@ -79,34 +113,8 @@ public class DocumentPrinter
         }
     }
 
-    public bool printImage(DocFile downloadFile, bool? isChecked=false, short noofCopies=1)
-    {
-        try
-        {
-            // Create a PrintDialog object
-            System.Windows.Controls.PrintDialog printDialog = new System.Windows.Controls.PrintDialog();
 
-            // Set the image to print
-            Image image = new Image();
-            image.Source = new BitmapImage(new Uri(downloadFile.Path, UriKind.Absolute));
-
-            // Set the page size and margins
-            System.Windows.Size pageSize = new System.Windows.Size(printDialog.PrintableAreaWidth, printDialog.PrintableAreaHeight);          
-            image.Measure(pageSize);
-            image.Arrange(new Rect(5, 5, pageSize.Width, pageSize.Height));
-            // Print the image
-            printDialog.PrintVisual(image, "Print Image");
-
-            return true;
-        }
-        catch(Exception ex)
-        {
-            Debug.WriteLine(ex);
-            System.Windows.Forms.MessageBox.Show("Error", ex.Message);
-            return false;
-        }
-    }
-    public bool printImage2(DocFile file, bool? isChecked, short noofCopies)
+    public bool printImage2(DocFile file)
     {
 
         try

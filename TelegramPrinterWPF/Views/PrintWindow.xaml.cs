@@ -98,10 +98,12 @@ namespace TelegramPrinterWPF
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            // Requires Microsoft.Toolkit.Uwp.Notifications NuGet package version 7.0 or greater
-            new ToastContentBuilder()
-                .AddText($"{UserName.Content} Sent a File {DocFile.Name}")
-                .Show(); // Not seeing the Show() method? Make sure you have version 7.0, and if you're using .NET 6 (or later), then your TFM must be net6.0-windows10.0.17763.0 or greater
+            if (!Application.Current.MainWindow.IsFocused)
+            {
+                new ToastContentBuilder()
+                    .AddText($"{UserName.Content} Sent a File {DocFile.Name}")
+                    .Show(); 
+            }
         }
     }
 }
