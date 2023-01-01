@@ -8,12 +8,12 @@
         Title="PrintFromTelegram" Height="442" Width="689" WindowStartupLocation="CenterScreen">
 
     <Grid>
-        <ListBox x:Name="Telegram_Logs" x:FieldModifier="public" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,78,371,9" Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}" MouseDoubleClick="Telegram_Logs_MouseDoubleClick"/>
+        <ListBox x:Name="Telegram_Logs" HorizontalAlignment="Left" x:FieldModifier="public" d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,104,0,9" Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}" MouseDoubleClick="Telegram_Logs_MouseDoubleClick" Width="408"/>
         <Button x:Name="TestPrintButton" Content="TestPrint" HorizontalAlignment="Right" Margin="0,37,10,0" VerticalAlignment="Top" Click="TestPrintButton_Click" Height="32" Width="77" RenderTransformOrigin="-0.953,-0.123" Foreground="White" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
         <ToggleButton  x:Name="ToggleBot" Content="Stop Bot" HorizontalAlignment="Left" Margin="10,37,0,0" VerticalAlignment="Top" 
                 Checked = "HandleCheck" Unchecked = "HandleUnchecked"
                 Height="32" Width="76" Foreground="White" Background="{DynamicResource {x:Static SystemColors.HighlightBrushKey}}"/>
-        <ListBox x:Name="ItemList" Margin="344,78,10,10"  Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}" MouseDoubleClick="Telegram_Logs_MouseDoubleClick" >
+        <ListBox x:Name="ItemList" Margin="445,104,10,10"  Background="{DynamicResource {x:Static SystemColors.GradientInactiveCaptionBrushKey}}" MouseDoubleClick="ItemList_MouseDoubleClick" >
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
@@ -25,10 +25,18 @@
                 <ContextMenu>
                     <MenuItem Header="Print" Click="MenuItemPrint_Click"/>
                     <MenuItem Header="Open" Click="MenuItemOpen_Click"/>
+                    <MenuItem Header="Delete" Click="MenuItemDelete_Click"/>
 
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
+        <Label Content="Telegram Logs:" HorizontalAlignment="Left" Margin="10,78,0,0" VerticalAlignment="Top" Width="97"/>
+        <Label Content="Download Files" HorizontalAlignment="Right" Margin="0,77,143,0" VerticalAlignment="Top" Width="94"/>
+        <Button Content="Clear" HorizontalAlignment="Left" Margin="603,80,0,0" VerticalAlignment="Top" Width="58" Background="{DynamicResource {x:Static SystemColors.AppWorkspaceBrushKey}}" Click="Button_Click">
+            <Button.BorderBrush>
+                <ImageBrush/>
+            </Button.BorderBrush>
+        </Button>
 
     </Grid>
 

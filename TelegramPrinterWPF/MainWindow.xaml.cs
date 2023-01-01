@@ -174,5 +174,44 @@ namespace TelegramPrinterWPF
                 p.Start();
             }
         }
+
+        private void MenuItemDelete_Click(object sender, RoutedEventArgs e)
+        {
+            if (ItemList.SelectedIndex == -1)
+            {
+                return;
+            }
+            var file = ItemList.SelectedItem as DocFile;
+            if (file != null)
+            {
+                db.DeleteFile(file.Name);
+                DownloadedFiles.Remove(file);
+            }
+
+        }
+
+        private void ItemList_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            if (ItemList.SelectedItem != null)
+            {
+                var item = ItemList.SelectedItem as DocFile;
+                if (item != null)
+                {
+                    var p = new Process();
+                    p.StartInfo = new ProcessStartInfo(item.Path)
+                    {
+                        UseShellExecute = true
+                    };
+                    p.Start();
+                }
+
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            db.DeleteAllFiles();
+            DownloadedFiles.Clear();
+        }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using DocumentFormat.OpenXml.InkML;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.Data.Sqlite;
 using System;
 using System.Collections.Generic;
@@ -27,7 +28,12 @@ namespace TelegramPrinterWPF.Repository
 
             var command = connection.CreateCommand();
             //command.CommandText = "DROP TABLE DownloadedFileInfo";
-            command.CommandText = " CREATE TABLE  DownloadedFileInfo (FileId INTEGER PRIMARY KEY AUTOINCREMENT, Name TEXT,FileInfo_Json TEXT)";
+            command.CommandText =
+                                    @"CREATE TABLE [DownloadedFileInfo] (
+                                      [FileId] INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL
+                                    , [Name] text NULL
+                                    , [FileInfo_Json] text NULL
+                                    )";
             command.ExecuteNonQuery();
         }
 
@@ -50,7 +56,7 @@ namespace TelegramPrinterWPF.Repository
             using var connection = GetConnection();
             connection.Open();
             var command = connection.CreateCommand();
-            command.CommandText = $"Select Name,FileInfo_Json FROM DownloadedFileInfo";
+            command.CommandText = $"Select Name,FileInfo_Json FROM DownloadedFileInfo ORDER BY FileId DESC";
             var reader = command.ExecuteReader();
 
             List<DocFile> FileList = new List<DocFile>();
@@ -62,7 +68,7 @@ namespace TelegramPrinterWPF.Repository
             return FileList;
         }
 
-        public DocFile GetDoc(string name)
+        public DocFile GetFile(string name)
         {
             using var connection = GetConnection();
             connection.Open();
@@ -71,14 +77,33 @@ namespace TelegramPrinterWPF.Repository
             command.Parameters.AddWithValue("@Name", name);
             var reader = command.ExecuteScalar() as string;
             DocFile doc = JsonSerializer.Deserialize<DocFile>(reader);
-            return doc;
-
+            return doc??new DocFile();
         }
+
+        public void DeleteFile(string name)
+        {
+            using var connection = GetConnection();
+            connection.Open();
+            var command = connection.CreateCommand();
+            command.CommandText = $"DELETE FROM DownloadedFileInfo WHERE Name=@Name";
+            command.Parameters.AddWithValue("@Name", name);
+            command.ExecuteNonQuery();
+        }
+
         private static SqliteConnection GetConnection()
         {
             var connection = new SqliteConnection("Data source=TelegramPrinter.db");
             SQLitePCL.raw.SetProvider(new SQLitePCL.SQLite3Provider_e_sqlite3());
             return connection;
+        }
+
+        public void DeleteAllFiles()
+        {
+            using var connection = GetConnection();
+            connection.Open();
+            var command = connection.CreateCommand();
+            command.CommandText = $"DELETE FROM DownloadedFileInfo";
+            command.ExecuteNonQuery();
         }
     }
 }

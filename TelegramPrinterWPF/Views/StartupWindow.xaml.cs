@@ -13,6 +13,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TelegramPrinterWPF.Repository;
 
 namespace TelegramPrinterWPF.Windows
 {
@@ -50,6 +51,8 @@ namespace TelegramPrinterWPF.Windows
 
         private void Done_Click(object sender, RoutedEventArgs e)
         {
+            var db = new DatabaseManager();
+            db.FirstTimeSetup();
             Close();
             return;
         }
