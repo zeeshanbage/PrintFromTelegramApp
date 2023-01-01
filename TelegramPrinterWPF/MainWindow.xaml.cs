@@ -116,15 +116,20 @@ namespace TelegramPrinterWPF
 
         private void Telegram_Logs_MouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-            if (Telegram_Logs.SelectedItem != null && Telegram_Logs.SelectedItem.ToString().StartsWith(FileDownloaded))
+            if (Telegram_Logs.SelectedItem != null && Telegram_Logs.SelectedItem.ToString().Contains(AppConstants.DownloadFolder))
             {
                 var item = Telegram_Logs.SelectedItem.ToString().Split(' ');
-                var p = new Process();
-                p.StartInfo = new ProcessStartInfo(item[5])
+                var path = item.Where(x => x.Contains(AppConstants.DownloadFolder)).FirstOrDefault();
+                if(path != null)
                 {
-                    UseShellExecute = true
-                };
-                p.Start();
+                    var p = new Process();
+                    p.StartInfo = new ProcessStartInfo(path)
+                    {
+                        UseShellExecute = true
+                    };
+                    p.Start();
+                }
+                
             }
         }
 

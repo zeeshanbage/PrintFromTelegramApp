@@ -68,7 +68,7 @@ namespace TelegramPrinterWPF.Source
             if (file.FilePath != null) await botClient.DownloadFileAsync(file.FilePath, fs);
             Debug.WriteLine($"{AppConstants.FileDownloaded} {filenameTrim} filepath {filepath}");
             MainWindow.Dispatcher?.Invoke(() =>
-            MainWindow.Telegram_Logs.Items.Add($"{AppConstants.FileDownloaded} {filenameTrim} path {filepath}"));
+            MainWindow.Telegram_Logs.Items.Add($"{message.Chat.FirstName} {message.Chat.LastName} sent {filenameTrim} path {filepath}"));
             fs.Close();
             await fs.DisposeAsync();
             return new DocFile(filepath, message.From?.Username);
