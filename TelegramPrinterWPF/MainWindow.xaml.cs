@@ -14,6 +14,7 @@ using Telegram.Bot;
 using Telegram.Bot.Polling;
 using Telegram.Bot.Types.Enums;
 using TelegramPrinterWPF.Models;
+using TelegramPrinterWPF.Repository;
 using TelegramPrinterWPF.Source;
 using TelegramPrinterWPF.Windows;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
@@ -28,13 +29,14 @@ namespace TelegramPrinterWPF
     public partial class MainWindow
     {
         private const string FileDownloaded = "file downloaded ";
-        public ObservableCollection<DocFile> DownloadedFiles = new ObservableCollection<DocFile>();
+        public ObservableCollection<DocFile> DownloadedFiles;
         CancellationTokenSource cts;
         DocumentPrinter documentPrinter;
+        DatabaseManager db;
         public MainWindow()
         {
             cts = new(); 
-
+            db= new DatabaseManager();
             if (ConfigurationManager.AppSettings["FirstStartup"]=="true")
             {
                 SetupAppForFirstUse();
@@ -42,6 +44,7 @@ namespace TelegramPrinterWPF
             InitializeComponent();
             documentPrinter = new DocumentPrinter(this);
             Loaded += MyWindow_Loaded;
+            DownloadedFiles = new ObservableCollection<DocFile>(db.GetDocFiles()); 
             ItemList.ItemsSource = DownloadedFiles;
         }
 
@@ -70,7 +73,9 @@ namespace TelegramPrinterWPF
 
         private void TestPrintButton_Click(object sender, RoutedEventArgs e)
         {
-            
+
+            var db = new DatabaseManager();
+            //db.FirstTimeSetup();
             var TestPrinter = new DocumentPrinter(this);
             bool? printed;
             // Create OpenFileDialog
@@ -82,6 +87,7 @@ namespace TelegramPrinterWPF
             if (result == true)
             {
                 var file = new DocFile(openFileDlg.FileName,"Zeeshan");
+                db.saveDocFile(file);
                 printed = TestPrinter.print(file);
             }
             
